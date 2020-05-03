@@ -2,9 +2,11 @@ package config
 
 type Yaml struct {
 	Iris struct {
-		Port       int    `yaml:"port"`
-		Charset    string `yaml:"charset"`
-		TimeFormat string `yaml:"time-format"`
+		Port                int             `yaml:"port"`
+		Charset             string          `yaml:"charset"`
+		TimeFormat          string          `yaml:"time-format"`
+		RemoteAddrHeaders   map[string]bool `yaml:"remote-addr-headers"`
+		EnableOptimizations bool            `yaml:"enable-optimizations"`
 	}
 	MongoDB struct {
 		Uri      string `yaml:"uri"`

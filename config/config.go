@@ -26,8 +26,10 @@ func init() {
 
 func Iris() iris.Configurator {
 	return iris.WithConfiguration(iris.Configuration{
-		TimeFormat: Config.Iris.TimeFormat,
-		Charset:    Config.Iris.Charset,
+		Charset:             Config.Iris.Charset,
+		TimeFormat:          Config.Iris.TimeFormat,
+		RemoteAddrHeaders:   Config.Iris.RemoteAddrHeaders,
+		EnableOptimizations: Config.Iris.EnableOptimizations,
 	})
 }
 

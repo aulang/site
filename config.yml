@@ -1,11 +1,11 @@
 iris:
   port: 8080
   charset: "UTF-8"
+  enable-optimizations: true
   time-format: 2006-01-02 15:04:05
-  other:
-    author: Aulang
-    wechat: aulang88
-    email: aulang@qq.com
+  remote-addr-headers:
+    X-Real-Ip: true
+    X-Forwarded-For: true
 
 mongodb:
   uri:  mongodb://127.0.0.1:27017

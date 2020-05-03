@@ -12,9 +12,7 @@ func main() {
 	app := iris.New()
 
 	app.Use(recover.New())
-	app.Logger().SetLevel("debug")
-
-	app.RegisterView(iris.HTML("./views", ".html"))
+	app.Logger().SetLevel("warn")
 
 	mvc.New(app).Handle(controller.NewIndexController())
 
