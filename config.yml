@@ -1,0 +1,12 @@
+iris:
+  port: 8080
+  charset: "UTF-8"
+  time-format: 2006-01-02 15:04:05
+  other:
+    author: Aulang
+    wechat: aulang88
+    email: aulang@qq.com
+
+mongodb:
+  uri:  mongodb://127.0.0.1:27017
+  database: site
