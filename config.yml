@@ -1,5 +1,5 @@
 iris:
-  port: 8080
+  port: 8081
   charset: "UTF-8"
   enable-optimizations: true
   time-format: 2006-01-02 15:04:05
