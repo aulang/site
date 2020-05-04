@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
-	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	. "site/entity"
+	"site/repository"
 )
 
 type ArticleService interface {
@@ -50,8 +50,6 @@ func (s *articleService) GetAll() ([]Article, error) {
 
 	return results, nil
 }
-
-var ErrNotFound = errors.New("记录不存在")
 
 func (s *articleService) GetByID(id string) (Article, error) {
 	var article Article
@@ -131,6 +129,7 @@ func (s *articleService) Delete(id string) error {
 
 var _ ArticleService = (*articleService)(nil)
 
-func NewArticleService(collection *mongo.Collection) ArticleService {
+func NewArticleService() ArticleService {
+	collection := repository.Collection("article")
 	return &articleService{C: collection, ctx: context.Background()}
 }

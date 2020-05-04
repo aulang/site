@@ -1,27 +1,15 @@
 package controller
 
-import (
-	"log"
-	"site/repository"
-	. "site/service"
-)
+import . "site/model"
 
 type IndexController struct {
-	beiAnService BeiAnService
 }
 
-func (c *IndexController) Get() interface{} {
-	beiAn, err := c.beiAnService.Get()
-
-	if err != nil {
-		log.Printf("获取备案信息失败，%v", err)
-	}
-
-	return beiAn
+// GET /
+func (c *IndexController) Get() Response {
+	return Success()
 }
 
 func NewIndexController() *IndexController {
-	return &IndexController{
-		beiAnService: NewBeiAnService(repository.Collection("beiAn")),
-	}
+	return &IndexController{}
 }
