@@ -7,27 +7,30 @@
     <link rel="stylesheet" href="../public/bootstrap.css"/>
     <link rel="stylesheet" href="../public/fontawesome/css/all.css"/>
 
+    <script type="text/javascript" src="../public/axios.js" defer></script>
     <script type="text/javascript" src="../public/vue.js" defer></script>
     <script type="text/javascript" src="../js/index.js" defer></script>
 </head>
 <body>
-<div class="container">
+<div class="container" id="header">
     <div class="row mt-3">
         <div class="col-sm-12 col-md-9 col-lg-9">
             <div class="row">
                 <a href="https://aulang.cn" class="nav-link">
-                    <strong>Aulang</strong>
+                    <strong v-text="title"></strong>
                 </a>
-                <a href="https://www.baidu.com" class="nav-link text-dark" target="_blank">百度</a>
-                <a href="https://aulang.cn" class="nav-link text-dark" target="_blank">测试</a>
+
+                <a class="nav-link text-muted"
+                   v-for="menu in menus" :href="menu.url" :title="menu.desc" :target="menu.target" v-text="menu.name">
+                </a>
             </div>
         </div>
         <div class="col-md-3 col-lg-3">
             <div class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="输入关键字搜索" aria-label="输入关键字搜索"
-                       aria-describedby="keyword-search">
+                       aria-describedby="keyword-search" v-model="keyword">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="keyword-search">
+                    <button class="btn btn-outline-secondary" type="button" id="keyword-search" @click="search">
                         <i class="fa fa-paper-plane"></i>
                     </button>
                 </div>
@@ -39,21 +42,24 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12 col-md-9 col-lg-9">
-            <div class="container">
+            <div class="container" id="article">
                 <div class="row">
-                    <div class="jumbotron mb-1 w-100">
-                        <h1 class="display-4">Hello, world!</h1>
+                    <div class="jumbotron mb-1 w-100" v-html="summary">
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="w-100">
                         <div class="border rounded py-1 d-flex justify-content-between">
-                            <a href="#" class="text-decoration-none text-success">
-                                <i class="fas fa-arrow-left">&nbsp;</i>上一篇文章
+                            <a class="text-decoration-none"
+                               :class="{'text-success': pre.success, 'text-muted': !pre.success}"
+                               @click="goPre">
+                                <i class="fas fa-arrow-left">&nbsp;</i><span v-text="pre.title"></span>
                             </a>
-                            <a href="#" class="text-decoration-none text-success">
-                                下一篇文章&nbsp;<i class="fas fa-arrow-right"></i>
+                            <a class="text-decoration-none"
+                               :class="{'text-success': next.success, 'text-muted': !next.success}"
+                               @click="goNext">
+                                <span v-text="next.title"></span>&nbsp;<i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
@@ -61,65 +67,39 @@
 
                 <div class="row mt-3">
                     <div class="border rounded w-100">
-                        <p class="p-2">已有<span>4</span>条评论</p>
+                        <p class="p-2">已有<span v-text="commentsCount"></span>条评论</p>
 
                         <div class="container">
-                            <div class="row">
+                            <div class="row" v-for="comment in comments">
                                 <div class="col-lg-1">
                                     <i class="fas fa-user fa-3x text-primary"></i>
                                 </div>
                                 <div class="col-sm-12 col-md-11 col-lg-11">
                                     <p class="text-wrap text-break">
-                                        <a href="#">user1:</a>
-                                        <span>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+                                        <a href="#" v-text="comment.name"></a>
+                                        <span>:</span>
+                                        <span v-text="comment.content"></span>
                                     </p>
                                     <p class="text-muted">
-                                        <span>2020-05-04 22:12:32</span>
+                                        <span v-text="comment.creationDate"></span>
                                     </p>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-lg-1">
-                                    <i class="fas fa-user fa-3x text-primary"></i>
-                                </div>
-                                <div class="col-sm-12 col-md-11 col-lg-11">
-                                    <p class="text-wrap text-break">
-                                        <a href="#">user2:</a>
-                                        <span>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</span>
-                                    </p>
-                                    <p class="text-muted">
-                                        <span>2020-05-04 22:12:32</span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="container bg-light ml-2">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <i class="fas fa-user fa-3x text-primary"></i>
-                                    </div>
-                                    <div class="col-sm-12 col-md-11 col-lg-11">
-                                        <p class="text-wrap text-break">
-                                            <a href="#">user3:</a>
-                                            <span>cccccccccccccccccccccccccccccccccccccc</span>
-                                        </p>
-                                        <p class="text-muted">
-                                            <span>2020-05-04 23:01:12</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <i class="fas fa-user fa-3x text-primary"></i>
-                                    </div>
-                                    <div class="col-sm-12 col-md-11 col-lg-11">
-                                        <p class="text-wrap text-break">
-                                            <a href="#">user4:</a>
-                                            <span>dddddddddddddddddddddddddddddddddddddd</span>
-                                        </p>
-                                        <p class="text-muted">
-                                            <span>2020-05-04 23:03:15</span>
-                                        </p>
+                                <div class="container bg-light mx-3" v-for="reply in comment.replies">
+                                    <div class="row">
+                                        <div class="col-lg-1">
+                                            <i class="fas fa-user fa-3x text-primary"></i>
+                                        </div>
+                                        <div class="col-sm-12 col-md-11 col-lg-11">
+                                            <p class="text-wrap text-break">
+                                                <a href="#" v-text="reply.name"></a>
+                                                <span>:</span>
+                                                <span v-text="reply.content"></span>
+                                            </p>
+                                            <p class="text-muted">
+                                                <span v-text="reply.creationDate"></span>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -130,39 +110,37 @@
         </div>
 
         <div class="col-lg-3 col-md-3">
-            <div class="container border rounded">
+            <div class="container border rounded" id="author">
                 <div class="row">
                     <div class="text-center mt-2 w-100">
-                        <img src="https://aulang.cn/oauth/images/nologo400.png" class="rounded img-thumbnail"
+                        <img :src="avatar" class="rounded img-thumbnail"
                              style="width: 60%"/>
                     </div>
                 </div>
 
                 <div class="row">
                     <p class="text-center mt-2 w-100">
-                        <strong>Aulang</strong>
+                        <strong v-text="author"></strong>
                     </p>
                 </div>
 
                 <div class="row">
                     <p class="text-center w-100">
-                        <a href="mailto:aulang@qq.com" class="mr-2">
+                        <a :href="'mailto:' + email" class="mr-2">
                             <i class="far fa-envelope fa-lg text-success"></i>
                         </a>
-                        <a href="https://aulang.cn" class="mr-2">
+                        <a :href="website" class="mr-2" target="_blank">
                             <i class="fab fa-internet-explorer fa-lg text-success"></i>
                         </a>
-                        <a href="https://github.com/aulang88">
+                        <a :href="github" target="_blank">
                             <i class="fab fa-github fa-lg text-success"></i>
                         </a>
                     </p>
                 </div>
 
-                <div class="row">
-                    <div class="text-center w-100 mb-2">
-                        <span class="border rounded p-1">
-                            一言信息
-                        </span>
+                <div class="row mb-2">
+                    <div class="text-center w-100 border rounded mx-2">
+                        <span class="text-wrap text-break" v-text="hitokoto"></span>
                     </div>
                 </div>
             </div>
@@ -192,31 +170,18 @@
             </div>
 
             <div class="container mt-2">
-                <div class="row">
+                <div class="row" id="recentReplies">
                     <div class="card w-100" style="width: 18rem;">
                         <div class="card-header h5 py-2">
                             最近回复
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item py-2">
+                            <li class="list-group-item py-2" v-for="reply in replies">
                                 <div class="text-truncate">
                                     <i class="fas fa-user text-primary"></i>
-                                    <a href="#">user1:</a>
-                                    <span>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
-                                </div>
-                            </li>
-                            <li class="list-group-item py-2">
-                                <div class="text-truncate">
-                                    <i class="fas fa-user text-primary"></i>
-                                    <a href="#">user2:</a>
-                                    <span>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</span>
-                                </div>
-                            </li>
-                            <li class="list-group-item py-2">
-                                <div class="text-truncate">
-                                    <i class="fas fa-user text-primary"></i>
-                                    <a href="#">user3:</a>
-                                    <span>ccccccccccccccccccccccccccccccccccccccc</span>
+                                    <a href="#" v-text="reply.name"></a>
+                                    <span>:</span>
+                                    <span v-text="reply.content"></span>
                                 </div>
                             </li>
                         </ul>
@@ -225,17 +190,16 @@
             </div>
 
             <div class="container mt-2">
-                <div class="row">
+                <div class="row" id="category">
                     <div class="card w-100" style="width: 18rem;">
                         <div class="card-header h5 py-2">
                             文章分类
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item py-2">
-                                <a href="#" class="pr-2 text-success"><i class="fa fa-book">&nbsp;</i>文章分类0</a>
-                                <a href="#" class="pr-2 text-success"><i class="fa fa-book">&nbsp;</i>文章分类1</a>
-                                <a href="#" class="pr-2 text-success"><i class="fa fa-book">&nbsp;</i>文章分类2</a>
-                                <a href="#" class="pr-2 text-success"><i class="fa fa-book">&nbsp;</i>文章分类3</a>
+                                <a href="#" class="pr-2 text-success" v-for="category in categories"><i class="fa fa-book">&nbsp;</i>
+                                    <span v-text="category.name"></span>(<span v-text="category.count"></span>)
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -243,20 +207,14 @@
             </div>
 
             <div class="container mt-2">
-                <div class="row">
+                <div class="row" id="links">
                     <div class="card w-100" style="width: 18rem;">
                         <div class="card-header h5 py-2">
                             友情链接
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item py-2">
-                                <a href="https://aulang.cn" target="_blank">管理后台</a>
-                            </li>
-                            <li class="list-group-item py-2">
-                                <a href="https://www.baidu.com" target="_blank">百度一下</a>
-                            </li>
-                            <li class="list-group-item py-2">
-                                <a href="https://www.ithome.com" target="_blank">IT之家</a>
+                            <li class="list-group-item py-2" v-for="link in links">
+                                <a target="_blank" :href="link.url" :title="link.desc" v-text="link.title"></a>
                             </li>
                         </ul>
                     </div>
@@ -267,17 +225,16 @@
 </div>
 
 <footer class="mt-auto py-2" style="background-color: #f5f5f5">
-    <div class="container text-center text-muted">
+    <div class="container text-center text-muted" id="beiAn">
         <span>&copy;2018 Aulang</span>
 
         <span>
-            <a class="text-muted" target="_blank" href="http://beian.miit.gov.cn">鄂ICP备18028762号</a>
+            <a class="text-muted" target="_blank" :href="miit.url" v-text="miit.no"></a>
         </span>
 
         <span>
             <img src="https://aulang.cn/oauth/images/beian.png"/>
-            <a class="text-muted" target="_blank"
-               href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011102003833">鄂公网安备42011102003833号</a>
+            <a class="text-muted" target="_blank" :href="mps.url" v-text="mps.no"></a>
         </span>
     </div>
 </footer>

@@ -12,6 +12,7 @@ type WebConfig struct {
 	Desc     string // 描述
 	Keywords string // 搜索关键字
 	Author   string // 作者
+	Website  string // 网站
 	Email    string // 邮箱
 	GitHub   string // GitHub
 	WeChat   string // 微信

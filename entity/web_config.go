@@ -14,6 +14,7 @@ type WebConfig struct {
 	Desc     string             `json:"desc"`     // 描述
 	Keywords string             `json:"keywords"` // 搜索关键字
 	Author   string             `json:"author"`   // 作者
+	Website  string             `json:"website"`  // 网站
 	Email    string             `json:"email"`    // 邮件
 	Github   string             `json:"github"`   // GitHub
 	WeChat   string             `json:"wechat"`   // 微信
