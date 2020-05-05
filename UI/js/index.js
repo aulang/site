@@ -1,21 +1,10 @@
+let apiUrl = '/site/';
+
 let header = new Vue({
     el: '#header',
     data: {
         title: 'Aulang',
-        menus: [
-            {
-                name: '百度',
-                url: 'https://www.baidu.com',
-                desc: '百度一下',
-                target: '_blank'
-            },
-            {
-                name: '吴浪',
-                url: 'https://aulang.cn',
-                desc: 'Aulang',
-                target: '_self'
-            }
-        ],
+        menus: [],
         keyword: ''
     },
     methods: {
@@ -127,16 +116,6 @@ let author = new Vue({
     }
 });
 
-function hitokoto() {
-    axios.get('https://v1.hitokoto.cn/?encode=text')
-        .then(function (response) {
-            author.hitokoto = response.data;
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-}
-
 let recentReplies = new Vue({
     el: '#recentReplies',
     data: {
@@ -191,29 +170,14 @@ let category = new Vue({
 let links = new Vue({
     el: '#links',
     data: {
-        links: [
-            {
-                title: '百度',
-                url: 'https://www.baidu.com',
-                desc: '百度一下，你就知道'
-            },
-            {
-                title: 'IT之家',
-                url: 'https://www.ithome.com',
-                desc: 'IT人的生活，尽在IT之家，爱IT，爱这里'
-            },
-            {
-                title: '管理后台',
-                url: 'https://aulang.cn',
-                desc: '不要瞎点了，不会让你知道的'
-            },
-        ]
+        links: []
     }
 });
 
 let beiAn = new Vue({
     el: '#beiAn',
     data: {
+        copyright: '©2018 Aulang',
         miit: {
             no: '鄂ICP备18028762号',
             url: 'http://beian.miit.gov.cn'
@@ -225,7 +189,60 @@ let beiAn = new Vue({
     }
 });
 
-function bei_an() {
+function getConfig() {
+    axios.get(apiUrl + 'config')
+        .then(function (response) {
+            let code = response.data.code;
+            if (code !== 0) {
+                alert(response.data.msg);
+                return;
+            }
+
+            let data = response.data.data;
+            header.title = data.title;
+
+            author.avatar = data.avatar;
+            author.author = data.author;
+            author.email = data.email;
+            author.github = data.github;
+            author.website = data.website;
+
+            links.links = data.links;
+
+            beiAn.copyright = '©' + data.since + ' ' + data.author;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+function initMenus() {
+    axios.get(apiUrl + 'menus')
+        .then(function (response) {
+            let code = response.data.code;
+            if (code !== 0) {
+                alert(response.data.msg);
+                return;
+            }
+
+            let data = response.data.data;
+
+            header.menus = data.map(menu => {
+                let target = menu.url.toLowerCase().startsWith('http') ? '_blank' : '_self';
+                return {
+                    name: menu.name,
+                    url: menu.url,
+                    desc: menu.desc,
+                    target: target
+                }
+            });
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+function initBeiAn() {
     axios.get('https://aulang.cn/oauth/api/beian')
         .then(function (response) {
             beiAn.miit = response.data.miit;
@@ -236,5 +253,17 @@ function bei_an() {
         });
 }
 
+function hitokoto() {
+    axios.get('https://v1.hitokoto.cn/?encode=text')
+        .then(function (response) {
+            author.hitokoto = response.data;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+getConfig();
+initMenus();
+initBeiAn();
 hitokoto();
-bei_an()

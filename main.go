@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/recover"
 	"github.com/kataras/iris/v12/mvc"
@@ -23,13 +24,19 @@ func main() {
 func initMVC(mvcApp *mvc.Application) {
 	mvcApp.HandleError(errorHandler)
 
+	// CORS
+	crs := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowCredentials: true,
+	})
+
 	// ROOT
 	mvcApp.Handle(controller.NewIndexController())
 
 	// 配置
-	mvcApp.Party("/config").Handle(controller.NewWebConfigController())
+	mvcApp.Party("/config", crs).Handle(controller.NewWebConfigController())
 	// 菜单
-	mvcApp.Party("/menus").Handle(controller.NewMenuController())
+	mvcApp.Party("/menus", crs).Handle(controller.NewMenuController())
 }
 
 func errorHandler(ctx iris.Context, err error) {
