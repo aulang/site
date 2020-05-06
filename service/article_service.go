@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	. "site/entity"
 	"site/repository"
 )
@@ -15,6 +16,7 @@ type ArticleService interface {
 	Create(a *Article) error
 	Update(a Article) error
 	Delete(id string) error
+	GetTop3() ([]Article, error)
 }
 
 type articleService struct {
@@ -125,6 +127,37 @@ func (s *articleService) Delete(id string) error {
 	}
 
 	return nil
+}
+
+func (s *articleService) GetTop3() ([]Article, error) {
+	ops := options.Find().SetSort(bson.D{{Key: "creationDate", Value: -1}}).SetLimit(3)
+
+	cur, err := s.C.Find(s.ctx, bson.D{}, ops)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer cur.Close(s.ctx)
+
+	var results []Article
+
+	for cur.Next(s.ctx) {
+		if err = cur.Err(); err != nil {
+			return nil, err
+		}
+
+		var elem Article
+		err = cur.Decode(&elem)
+
+		if err != nil {
+			return nil, err
+		}
+
+		results = append(results, elem)
+	}
+
+	return results, nil
 }
 
 var _ ArticleService = (*articleService)(nil)

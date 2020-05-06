@@ -37,6 +37,8 @@ func initMVC(mvcApp *mvc.Application) {
 	mvcApp.Party("/config", crs).Handle(controller.NewWebConfigController())
 	// 菜单
 	mvcApp.Party("/menus", crs).Handle(controller.NewMenuController())
+	// 文章
+	mvcApp.Party("/articles", crs).Handle(controller.NewArticleController())
 }
 
 func errorHandler(ctx iris.Context, err error) {
