@@ -130,7 +130,8 @@ func (s *articleService) Delete(id string) error {
 }
 
 func (s *articleService) GetTop3() ([]Article, error) {
-	ops := options.Find().SetSort(bson.D{{Key: "creationDate", Value: -1}}).SetLimit(3)
+	// 只要id和title字段
+	ops := options.Find().SetProjection(bson.M{"_id": 1, "title": 1}).SetSort(bson.D{{Key: "creationDate", Value: -1}}).SetLimit(3)
 
 	cur, err := s.C.Find(s.ctx, bson.D{}, ops)
 

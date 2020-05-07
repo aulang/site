@@ -7,9 +7,10 @@ import (
 
 // 回复
 type Reply struct {
-	Email   string `json:"mail"`    // 回复人邮件
-	Name    string `json:"name"`    // 回复人
-	Content string `json:"content"` // 内容
+	Email        string    `json:"mail"`         // 回复人邮件
+	Name         string    `json:"name"`         // 回复人
+	Content      string    `json:"content"`      // 内容
+	CreationDate time.Time `json:"creationDate"` // 创建日期
 }
 
 // 评论

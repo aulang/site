@@ -13,7 +13,8 @@ type Article struct {
 	Summary       string             `json:"summary"`       // 总结
 	Content       string             `json:"content"`       // 内容
 	Renew         time.Time          `json:"renew"`         // 更新时间
-	Category      Category           `json:"category"`      // 类别
+	CategoryId    string             `json:"categoryId"`    // 类别ID
+	CategoryName  string             `json:"categoryName"`  // 类别名
 	CreationDate  time.Time          `json:"creationDate"`  // 创建日期
 	CommentsCount int                `json:"commentsCount"` // 评论计数
 }

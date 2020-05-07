@@ -142,28 +142,7 @@ let recentReplies = new Vue({
 let category = new Vue({
     el: '#category',
     data: {
-        categories: [
-            {
-                id: '1',
-                name: '经',
-                count: 1
-            },
-            {
-                id: '2',
-                name: '史',
-                count: 2
-            },
-            {
-                id: '3',
-                name: '子',
-                count: 3
-            },
-            {
-                id: '4',
-                name: '集',
-                count: 4
-            }
-        ]
+        categories: []
     }
 });
 
@@ -242,6 +221,22 @@ function initMenus() {
         });
 }
 
+function initCategory() {
+    axios.get(apiUrl + 'categories')
+        .then(function (response) {
+            let code = response.data.code;
+            if (code !== 0) {
+                alert(response.data.msg);
+                return;
+            }
+
+            category.categories = response.data.data;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
 function initBeiAn() {
     axios.get('https://aulang.cn/oauth/api/beian')
         .then(function (response) {
@@ -263,7 +258,8 @@ function hitokoto() {
         });
 }
 
+hitokoto();
 getConfig();
 initMenus();
 initBeiAn();
-hitokoto();
+initCategory();
