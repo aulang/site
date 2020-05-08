@@ -116,26 +116,17 @@ let author = new Vue({
     }
 });
 
-let recentReplies = new Vue({
-    el: '#recentReplies',
+let top3Comments = new Vue({
+    el: '#top3Comments',
     data: {
-        replies: [
-            {
-                name: "user2",
-                content: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-                creationDate: "2020-05-04 23:01:12",
-            },
-            {
-                name: "user3",
-                content: "cccccccccccccccccccccccccccccccccccccc",
-                creationDate: "2020-05-04 23:01:12",
-            },
-            {
-                name: "user4",
-                content: "dddddddddddddddddddddddddddddddddddddd",
-                creationDate: "2020-05-04 23:03:15",
-            }
-        ]
+        comments: []
+    }
+});
+
+let top3Articles = new Vue({
+    el: '#top3Articles',
+    data: {
+        articles: []
     }
 });
 
@@ -177,6 +168,10 @@ function getConfig() {
                 return;
             }
 
+            if (!response.data.data) {
+                return;
+            }
+
             let data = response.data.data;
             header.title = data.title;
 
@@ -204,9 +199,11 @@ function initMenus() {
                 return;
             }
 
-            let data = response.data.data;
+            if (!response.data.data) {
+                return;
+            }
 
-            header.menus = data.map(menu => {
+            header.menus = response.data.data.map(menu => {
                 let target = menu.url.toLowerCase().startsWith('http') ? '_blank' : '_self';
                 return {
                     name: menu.name,
@@ -230,7 +227,9 @@ function initCategory() {
                 return;
             }
 
-            category.categories = response.data.data;
+            if (response.data.data) {
+                category.categories = response.data.data;
+            }
         })
         .catch(function (error) {
             console.log(error);
@@ -242,6 +241,42 @@ function initBeiAn() {
         .then(function (response) {
             beiAn.miit = response.data.miit;
             beiAn.mps = response.data.mps;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+function initTop3Articles() {
+    axios.get(apiUrl + 'articles/top3')
+        .then(function (response) {
+            let code = response.data.code;
+            if (code !== 0) {
+                alert(response.data.msg);
+                return;
+            }
+
+            if (response.data.data) {
+                top3Articles.articles = response.data.data;
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+function initTop3Comments() {
+    axios.get(apiUrl + 'comment/top3')
+        .then(function (response) {
+            let code = response.data.code;
+            if (code !== 0) {
+                alert(response.data.msg);
+                return;
+            }
+
+            if (response.data.data) {
+                top3Comments.comments = response.data.data;
+            }
         })
         .catch(function (error) {
             console.log(error);
@@ -263,3 +298,5 @@ getConfig();
 initMenus();
 initBeiAn();
 initCategory();
+initTop3Articles();
+initTop3Comments()
