@@ -18,7 +18,7 @@ type Comment struct {
 	ID           primitive.ObjectID `json:"id" bson:"_id"`
 	Email        string             `json:"mail"`         // 评论人邮件
 	Name         string             `json:"name"`         // 评论人
-	ArticleID    string             `json:"articleID"`    // 文章ID
+	ArticleId    string             `json:"articleId"`    // 文章ID
 	Content      string             `json:"content"`      // 内容
 	CreationDate time.Time          `json:"creationDate"` // 创建日期
 	Replies      []Reply            `json:"replies"`      // 回复

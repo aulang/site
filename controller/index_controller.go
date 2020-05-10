@@ -9,7 +9,3 @@ type IndexController struct {
 func (c *IndexController) Get() Response {
 	return Success()
 }
-
-func NewIndexController() *IndexController {
-	return &IndexController{}
-}

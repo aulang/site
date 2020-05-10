@@ -8,6 +8,7 @@ import (
 	"site/config"
 	"site/controller"
 	"site/model"
+	"site/service"
 )
 
 func main() {
@@ -30,19 +31,25 @@ func initMVC(mvcApp *mvc.Application) {
 		AllowCredentials: true,
 	})
 
-	// ROOT
-	mvcApp.Handle(controller.NewIndexController())
+	// Service注册
+	mvcApp.Register(service.NewWebConfigService())
+	mvcApp.Register(service.NewMenuService())
+	mvcApp.Register(service.NewCategoryService())
+	mvcApp.Register(service.NewArticleService())
+	mvcApp.Register(service.NewCommentService())
 
+	// ROOT
+	mvcApp.Handle(new(controller.IndexController))
 	// 配置
-	mvcApp.Party("/config", crs).Handle(controller.NewWebConfigController())
+	mvcApp.Party("/config", crs).Handle(new(controller.WebConfigController))
 	// 菜单
-	mvcApp.Party("/menus", crs).Handle(controller.NewMenuController())
-	// 文章
-	mvcApp.Party("/articles", crs).Handle(controller.NewArticleController())
-	// 评论
-	mvcApp.Party("/comment", crs).Handle(controller.NewCommentController())
+	mvcApp.Party("/menus", crs).Handle(new(controller.MenuController))
 	// 类别
-	mvcApp.Party("/categories", crs).Handle(controller.NewCategoryController())
+	mvcApp.Party("/categories", crs).Handle(new(controller.CategoryController))
+	// 文章
+	mvcApp.Party("/articles", crs).Handle(new(controller.ArticleController))
+	// 评论
+	mvcApp.Party("/comment", crs).Handle(new(controller.CommentController))
 }
 
 func errorHandler(ctx iris.Context, err error) {
