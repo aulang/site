@@ -51,7 +51,7 @@ func (s *commentService) GetTop3() ([]Comment, error) {
 }
 
 func (s *commentService) FindByArticleId(articleId string) ([]Comment, error) {
-	ops := options.Find().SetSort(bson.D{{Key: "creationDate", Value: -1}})
+	ops := options.Find().SetSort(bson.D{{Key: "creationDate", Value: 1}})
 
 	cur, err := s.C.Find(s.ctx, bson.D{{"articleId", articleId}}, ops)
 

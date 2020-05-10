@@ -35,7 +35,7 @@ func (c *ArticleController) GetTop3() Response {
 	return SuccessWithData(articles)
 }
 
-// GET /articles/pages
+// GET /articles/page
 func (c *ArticleController) GetPage() Response {
 	pageNo := c.Ctx.URLParamIntDefault("page", 1)
 	pageSize := c.Ctx.URLParamIntDefault("size", 1)
@@ -46,7 +46,7 @@ func (c *ArticleController) GetPage() Response {
 	}
 
 	if articles == nil {
-		return Success()
+		SuccessWithData(nil)
 	}
 
 	var results []ArticleComment

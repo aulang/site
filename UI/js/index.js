@@ -18,58 +18,84 @@ let header = new Vue({
 let article = new Vue({
     el: '#article',
     data: {
-        id: 'articleId',
-        title: "title",
-        subTitle: 'subTitle',
-        summary: '<h1 class="display-4">Hello, world!</h1>',
-        commentsCount: 4,
-        comments: [
-            {
-                name: "user1",
-                content: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                creationDate: "2020-05-04 22:12:32",
-                replies: null
-            },
-            {
-                name: "user2",
-                content: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-                creationDate: "2020-05-04 22:12:32",
-                replies: [
-                    {
-                        name: "user3",
-                        content: "cccccccccccccccccccccccccccccccccccccc",
-                        creationDate: "2020-05-04 23:01:12",
-                    },
-                    {
-                        name: "user4",
-                        content: "dddddddddddddddddddddddddddddddddddddd",
-                        creationDate: "2020-05-04 23:03:15",
-                    }
-                ]
-            }
-        ],
-        preArticle: null,
-        nextArticle: {
-            id: 'articleId',
-            title: "测试文章3"
-        }
+        currPage: 1,
+        currArticle: {},
+        preArticle: {},
+        nextArticle: {}
     },
     methods: {
         goPre: function () {
             let that = this;
             if (!that.preArticle || !that.preArticle.id) {
-                return
+                return;
             }
 
-            alert(that.preArticle.id);
+            let page = that.currPage + 2;
+
+            axios.get(apiUrl + 'articles/page?size=1&page=' + page)
+                .then(function (response) {
+                    let code = response.data.code;
+                    if (code !== 0) {
+                        alert(response.data.msg);
+                        return;
+                    }
+
+                    that.nextArticle = that.currArticle;
+                    that.currArticle = that.preArticle;
+
+                    if (!response.data.data) {
+                        that.preArticle = null;
+                        return;
+                    }
+
+                    that.currPage = that.currPage + 1;
+
+                    let data = response.data.data;
+                    that.preArticle = data[0];
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
         goNext: function () {
             let that = this;
             if (!that.nextArticle || !that.nextArticle.id) {
-                return
+                return;
             }
 
-            alert(that.nextArticle.id);
+            let page = that.currPage - 1;
+            if (page < 1) {
+                that.preArticle = that.currArticle;
+                that.currArticle = that.nextArticle;
+
+                that.nextArticle = null;
+                return;
+            }
+
+            axios.get(apiUrl + 'articles/page?size=1&page=' + page)
+                .then(function (response) {
+                    let code = response.data.code;
+                    if (code !== 0) {
+                        alert(response.data.msg);
+                        return;
+                    }
+
+                    that.preArticle = that.currArticle;
+                    that.currArticle = that.nextArticle;
+
+                    if (!response.data.data) {
+                        that.nextArticle = null;
+                        return;
+                    }
+
+                    that.currPage = that.currPage - 1;
+
+                    let data = response.data.data;
+                    that.nextArticle = data[0];
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         }
     },
     computed: {
@@ -218,6 +244,32 @@ function initMenus() {
         });
 }
 
+function initArticle() {
+    axios.get(apiUrl + 'articles/page?page=1&size=2')
+        .then(function (response) {
+            let code = response.data.code;
+            if (code !== 0) {
+                alert(response.data.msg);
+                return;
+            }
+
+            if (!response.data.data) {
+                return;
+            }
+
+            let data = response.data.data;
+
+            article.currArticle = data[0];
+
+            if (data.length > 1) {
+                article.preArticle = data[1];
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
 function initCategory() {
     axios.get(apiUrl + 'categories')
         .then(function (response) {
@@ -297,6 +349,7 @@ hitokoto();
 getConfig();
 initMenus();
 initBeiAn();
+initArticle();
 initCategory();
 initTop3Articles();
 initTop3Comments()
