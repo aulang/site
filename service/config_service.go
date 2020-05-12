@@ -13,14 +13,14 @@ type WebConfigService interface {
 }
 
 type webConfigService struct {
-	C   *mongo.Collection
+	c   *mongo.Collection
 	ctx context.Context
 }
 
 func (s *webConfigService) Get() (WebConfig, error) {
 	var webConfig WebConfig
 
-	err := s.C.FindOne(s.ctx, bson.D{}).Decode(&webConfig)
+	err := s.c.FindOne(s.ctx, bson.D{}).Decode(&webConfig)
 
 	if err == mongo.ErrNoDocuments {
 		return webConfig, ErrNotFound
@@ -31,7 +31,8 @@ func (s *webConfigService) Get() (WebConfig, error) {
 
 var _ WebConfigService = (*webConfigService)(nil)
 
+var webConfig = repository.Collection("webConfig")
+
 func NewWebConfigService() WebConfigService {
-	collection := repository.Collection("webConfig")
-	return &webConfigService{C: collection, ctx: context.Background()}
+	return &webConfigService{c: webConfig, ctx: ctx}
 }

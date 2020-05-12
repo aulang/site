@@ -16,12 +16,12 @@ type MenuService interface {
 }
 
 type menuService struct {
-	C   *mongo.Collection
+	c   *mongo.Collection
 	ctx context.Context
 }
 
 func (s *menuService) GetAll() ([]Menu, error) {
-	cur, err := s.C.Find(s.ctx, bson.D{})
+	cur, err := s.c.Find(s.ctx, bson.D{})
 
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (s *menuService) GetAll() ([]Menu, error) {
 func (s *menuService) Save(m *Menu) error {
 	if m.ID.IsZero() {
 		m.ID = primitive.NewObjectID()
-		_, err := s.C.InsertOne(s.ctx, m)
+		_, err := s.c.InsertOne(s.ctx, m)
 
 		if err != nil {
 			return err
@@ -66,7 +66,7 @@ func (s *menuService) Save(m *Menu) error {
 			{Key: "$set", Value: m},
 		}
 
-		_, err := s.C.UpdateOne(s.ctx, query, update)
+		_, err := s.c.UpdateOne(s.ctx, query, update)
 		if err != nil {
 			if err == mongo.ErrNoDocuments {
 				return ErrNotFound
@@ -81,7 +81,8 @@ func (s *menuService) Save(m *Menu) error {
 
 var _ MenuService = (*menuService)(nil)
 
+var menu = repository.Collection("menu")
+
 func NewMenuService() MenuService {
-	collection := repository.Collection("menu")
-	return &menuService{C: collection, ctx: context.Background()}
+	return &menuService{c: menu, ctx: ctx}
 }

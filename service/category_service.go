@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	. "site/entity"
 	"site/repository"
 )
@@ -16,12 +17,12 @@ type CategoryService interface {
 }
 
 type categoryService struct {
-	C   *mongo.Collection
+	c   *mongo.Collection
 	ctx context.Context
 }
 
 func (s *categoryService) GetAll() ([]Category, error) {
-	cur, err := s.C.Find(s.ctx, bson.D{})
+	cur, err := s.c.Find(s.ctx, bson.D{})
 
 	if err != nil {
 		return nil, err
@@ -52,7 +53,7 @@ func (s *categoryService) GetAll() ([]Category, error) {
 func (s *categoryService) Save(m *Category) error {
 	if m.ID.IsZero() {
 		m.ID = primitive.NewObjectID()
-		_, err := s.C.InsertOne(s.ctx, m)
+		_, err := s.c.InsertOne(s.ctx, m)
 
 		if err != nil {
 			return err
@@ -66,7 +67,7 @@ func (s *categoryService) Save(m *Category) error {
 			{Key: "$set", Value: m},
 		}
 
-		_, err := s.C.UpdateOne(s.ctx, query, update)
+		_, err := s.c.UpdateOne(s.ctx, query, update)
 		if err != nil {
 			if err == mongo.ErrNoDocuments {
 				return ErrNotFound
@@ -81,7 +82,19 @@ func (s *categoryService) Save(m *Category) error {
 
 var _ CategoryService = (*categoryService)(nil)
 
+var category = repository.Collection("category")
+
 func NewCategoryService() CategoryService {
-	collection := repository.Collection("category")
-	return &categoryService{C: collection, ctx: context.Background()}
+	return &categoryService{c: category, ctx: ctx}
+}
+
+func init() {
+	indexes := [...]mongo.IndexModel{
+		{
+			Keys:    bson.M{"name": 1},
+			Options: options.Index().SetName("ik_category_name").SetUnique(true).SetBackground(true),
+		},
+	}
+
+	category.Indexes().CreateMany(ctx, indexes[:])
 }

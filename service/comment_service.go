@@ -15,14 +15,14 @@ type CommentService interface {
 }
 
 type commentService struct {
-	C   *mongo.Collection
+	c   *mongo.Collection
 	ctx context.Context
 }
 
 func (s *commentService) GetTop3() ([]Comment, error) {
 	ops := options.Find().SetSort(bson.D{{Key: "creationDate", Value: -1}}).SetLimit(3)
 
-	cur, err := s.C.Find(s.ctx, bson.D{}, ops)
+	cur, err := s.c.Find(s.ctx, bson.D{}, ops)
 
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (s *commentService) GetTop3() ([]Comment, error) {
 func (s *commentService) FindByArticleId(articleId string) ([]Comment, error) {
 	ops := options.Find().SetSort(bson.D{{Key: "creationDate", Value: 1}})
 
-	cur, err := s.C.Find(s.ctx, bson.D{{"articleId", articleId}}, ops)
+	cur, err := s.c.Find(s.ctx, bson.D{{"articleId", articleId}}, ops)
 
 	if err != nil {
 		return nil, err
@@ -83,7 +83,19 @@ func (s *commentService) FindByArticleId(articleId string) ([]Comment, error) {
 
 var _ CommentService = (*commentService)(nil)
 
+var comment = repository.Collection("comment")
+
 func NewCommentService() CommentService {
-	collection := repository.Collection("comment")
-	return &commentService{C: collection, ctx: context.Background()}
+	return &commentService{c: comment, ctx: ctx}
+}
+
+func init() {
+	indexes := [...]mongo.IndexModel{
+		{
+			Keys:    bson.M{"comment": -1},
+			Options: options.Index().SetName("ik_comment_articleId").SetBackground(true),
+		},
+	}
+
+	comment.Indexes().CreateMany(ctx, indexes[:])
 }

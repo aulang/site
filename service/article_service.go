@@ -21,12 +21,12 @@ type ArticleService interface {
 }
 
 type articleService struct {
-	C   *mongo.Collection
+	c   *mongo.Collection
 	ctx context.Context
 }
 
 func (s *articleService) GetAll() ([]Article, error) {
-	cur, err := s.C.Find(s.ctx, bson.D{})
+	cur, err := s.c.Find(s.ctx, bson.D{})
 
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func (s *articleService) GetByID(id string) (Article, error) {
 
 	query := bson.D{{Key: "_id", Value: _id}}
 
-	err = s.C.FindOne(s.ctx, query).Decode(&article)
+	err = s.c.FindOne(s.ctx, query).Decode(&article)
 
 	if err == mongo.ErrNoDocuments {
 		return article, ErrNotFound
@@ -79,7 +79,7 @@ func (s *articleService) Create(a *Article) error {
 		a.ID = primitive.NewObjectID()
 	}
 
-	_, err := s.C.InsertOne(s.ctx, a)
+	_, err := s.c.InsertOne(s.ctx, a)
 
 	if err != nil {
 		return err
@@ -97,7 +97,7 @@ func (s *articleService) Update(a Article) error {
 		{Key: "$set", Value: a},
 	}
 
-	_, err := s.C.UpdateOne(s.ctx, query, update)
+	_, err := s.c.UpdateOne(s.ctx, query, update)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return ErrNotFound
@@ -118,7 +118,7 @@ func (s *articleService) Delete(id string) error {
 
 	query := bson.D{{Key: "_id", Value: _id}}
 
-	_, err = s.C.DeleteOne(s.ctx, query)
+	_, err = s.c.DeleteOne(s.ctx, query)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return ErrNotFound
@@ -134,7 +134,7 @@ func (s *articleService) GetTop3() ([]Article, error) {
 	// 只要id和title字段
 	ops := options.Find().SetProjection(bson.M{"_id": 1, "title": 1}).SetSort(bson.D{{Key: "creationDate", Value: -1}}).SetLimit(3)
 
-	cur, err := s.C.Find(s.ctx, bson.D{}, ops)
+	cur, err := s.c.Find(s.ctx, bson.D{}, ops)
 
 	if err != nil {
 		return nil, err
@@ -167,7 +167,7 @@ func (s *articleService) Page(pageNo, pageSize int64) ([]Article, error) {
 
 	ops := options.Find().SetSort(bson.D{{Key: "renew", Value: -1}}).SetSkip(skip).SetLimit(pageSize)
 
-	cur, err := s.C.Find(s.ctx, bson.D{}, ops)
+	cur, err := s.c.Find(s.ctx, bson.D{}, ops)
 
 	if err != nil {
 		return nil, err
@@ -197,7 +197,27 @@ func (s *articleService) Page(pageNo, pageSize int64) ([]Article, error) {
 
 var _ ArticleService = (*articleService)(nil)
 
+var article = repository.Collection("article")
+
 func NewArticleService() ArticleService {
-	collection := repository.Collection("article")
-	return &articleService{C: collection, ctx: context.Background()}
+	return &articleService{c: article, ctx: ctx}
+}
+
+func init() {
+	indexes := [...]mongo.IndexModel{
+		{
+			Keys:    bson.M{"renew": -1},
+			Options: options.Index().SetName("ik_article_renew").SetBackground(true),
+		},
+		{
+			Keys:    bson.M{"creationDate": -1},
+			Options: options.Index().SetName("ik_article_creationDate").SetBackground(true),
+		},
+		{
+			Keys:    bson.M{"categoryId": -1},
+			Options: options.Index().SetName("ik_article_categoryId").SetBackground(true),
+		},
+	}
+
+	article.Indexes().CreateMany(ctx, indexes[:])
 }
