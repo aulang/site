@@ -12,11 +12,11 @@ type CommentController struct {
 
 // GET /comment/top3
 func (c *CommentController) GetTop3() Response {
-	articles, err := c.CommentService.GetTop3()
+	comments, err := c.CommentService.GetTop3()
 
 	if err != nil {
 		log.Printf("查询最进评论失败，%v", err)
 	}
 
-	return SuccessWithData(articles)
+	return SuccessWithData(comments)
 }

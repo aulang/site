@@ -10,7 +10,9 @@ let header = new Vue({
     methods: {
         search: function () {
             let that = this;
-            alert(that.keyword);
+            if (that.keyword) {
+                window.location.assign('./page.html?keyword=' + that.keyword);
+            }
         }
     }
 });
@@ -133,7 +135,7 @@ let article = new Vue({
 let author = new Vue({
     el: '#author',
     data: {
-        avatar: 'https://aulang.cn/oauth/images/nologo400.png',
+        avatar: './images/aulang.jpg',
         author: 'Aulang',
         website: 'https://aulang.cn',
         email: 'aulang@qq.com',
@@ -185,7 +187,27 @@ let beiAn = new Vue({
     }
 });
 
+function setConfig(config) {
+    header.title = config.title;
+
+    author.avatar = config.avatar;
+    author.author = config.author;
+    author.email = config.email;
+    author.github = config.github;
+    author.website = config.website;
+
+    links.links = config.links;
+
+    beiAn.copyright = '©' + config.since + ' ' + config.author;
+}
+
 function getConfig() {
+    let config = load('config');
+    if (config) {
+        setConfig(config);
+        return;
+    }
+
     axios.get(apiUrl + 'config')
         .then(function (response) {
             let code = response.data.code;
@@ -198,18 +220,8 @@ function getConfig() {
                 return;
             }
 
-            let data = response.data.data;
-            header.title = data.title;
-
-            author.avatar = data.avatar;
-            author.author = data.author;
-            author.email = data.email;
-            author.github = data.github;
-            author.website = data.website;
-
-            links.links = data.links;
-
-            beiAn.copyright = '©' + data.since + ' ' + data.author;
+            config = save('config', response.data.data);
+            setConfig(config);
         })
         .catch(function (error) {
             console.log(error);
@@ -217,6 +229,12 @@ function getConfig() {
 }
 
 function initMenus() {
+    let menus = load('menus');
+    if (menus) {
+        header.menus = menus;
+        return;
+    }
+
     axios.get(apiUrl + 'menus')
         .then(function (response) {
             let code = response.data.code;
@@ -229,7 +247,7 @@ function initMenus() {
                 return;
             }
 
-            header.menus = response.data.data.map(menu => {
+            menus = response.data.data.map(menu => {
                 let target = menu.url.toLowerCase().startsWith('http') ? '_blank' : '_self';
                 return {
                     name: menu.name,
@@ -238,6 +256,8 @@ function initMenus() {
                     target: target
                 }
             });
+
+            header.menus = save('menus', menus);
         })
         .catch(function (error) {
             console.log(error);
@@ -271,6 +291,12 @@ function initArticle() {
 }
 
 function initCategory() {
+    let categories = load('categories');
+    if (categories) {
+        category.categories = categories;
+        return;
+    }
+
     axios.get(apiUrl + 'categories')
         .then(function (response) {
             let code = response.data.code;
@@ -280,7 +306,7 @@ function initCategory() {
             }
 
             if (response.data.data) {
-                category.categories = response.data.data;
+                category.categories = save('categories', response.data.data);
             }
         })
         .catch(function (error) {
@@ -289,10 +315,18 @@ function initCategory() {
 }
 
 function initBeiAn() {
+    let bei_an = load('bei_an');
+    if (bei_an) {
+        beiAn.miit = bei_an.miit;
+        beiAn.mps = bei_an.mps;
+        return;
+    }
+
     axios.get('https://aulang.cn/oauth/api/beian')
         .then(function (response) {
-            beiAn.miit = response.data.miit;
-            beiAn.mps = response.data.mps;
+            bei_an = save('bei_an', response.data)
+            beiAn.miit = bei_an.miit;
+            beiAn.mps = bei_an.mps;
         })
         .catch(function (error) {
             console.log(error);
