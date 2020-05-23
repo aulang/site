@@ -1,4 +1,5 @@
-let apiUrl = '/site/';
+import {apiUrl} from './public/base.js';
+import {storage} from './public/storage.js';
 
 let header = new Vue({
     el: '#header',
@@ -202,7 +203,7 @@ function setConfig(config) {
 }
 
 function getConfig() {
-    let config = load('config');
+    let config = storage.load('config');
     if (config) {
         setConfig(config);
         return;
@@ -220,7 +221,7 @@ function getConfig() {
                 return;
             }
 
-            config = save('config', response.data.data);
+            config = storage.save('config', response.data.data);
             setConfig(config);
         })
         .catch(function (error) {
@@ -229,7 +230,7 @@ function getConfig() {
 }
 
 function initMenus() {
-    let menus = load('menus');
+    let menus = storage.load('menus');
     if (menus) {
         header.menus = menus;
         return;
@@ -257,7 +258,7 @@ function initMenus() {
                 }
             });
 
-            header.menus = save('menus', menus);
+            header.menus = storage.save('menus', menus);
         })
         .catch(function (error) {
             console.log(error);
@@ -291,7 +292,7 @@ function initArticle() {
 }
 
 function initCategory() {
-    let categories = load('categories');
+    let categories = storage.load('categories');
     if (categories) {
         category.categories = categories;
         return;
@@ -306,7 +307,7 @@ function initCategory() {
             }
 
             if (response.data.data) {
-                category.categories = save('categories', response.data.data);
+                category.categories = storage.save('categories', response.data.data);
             }
         })
         .catch(function (error) {
@@ -315,7 +316,7 @@ function initCategory() {
 }
 
 function initBeiAn() {
-    let bei_an = load('bei_an');
+    let bei_an = storage.load('bei_an');
     if (bei_an) {
         beiAn.miit = bei_an.miit;
         beiAn.mps = bei_an.mps;
@@ -324,7 +325,7 @@ function initBeiAn() {
 
     axios.get('https://aulang.cn/oauth/api/beian')
         .then(function (response) {
-            bei_an = save('bei_an', response.data)
+            bei_an = storage.save('bei_an', response.data)
             beiAn.miit = bei_an.miit;
             beiAn.mps = bei_an.mps;
         })

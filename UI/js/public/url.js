@@ -16,3 +16,5 @@ function urlParam(name) {
 
     return null;
 }
+
+export {urlParam}

@@ -1,28 +1,28 @@
-let storage = window.sessionStorage;
-
-function save(key, value) {
-    let temp = JSON.stringify(value);
-    storage.setItem(key, temp);
-    return value;
-}
-
-function load(key) {
-    let value = storage.getItem(key);
-    if (value) {
-        return JSON.parse(value);
-    } else {
-        return null;
+let storage = {
+    storage: window.sessionStorage,
+    save: function (key, value) {
+        let temp = JSON.stringify(value);
+        this.storage.setItem(key, temp);
+        return value;
+    },
+    load: function (key) {
+        let value = this.storage.getItem(key);
+        if (value) {
+            return JSON.parse(value);
+        } else {
+            return null;
+        }
+    },
+    remove: function (key) {
+        let value = this.load(key);
+        if (value) {
+            this.storage.removeItem(key);
+        }
+        return value;
+    },
+    clear: function clear() {
+        this.storage.clear();
     }
 }
 
-function remove(key) {
-    let value = load(key);
-    if (value) {
-        storage.removeItem(key);
-    }
-    return value;
-}
-
-function clear() {
-    storage.clear();
-}
+export {storage};
