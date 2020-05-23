@@ -1,12 +1,15 @@
 package controller
 
 import (
+	"github.com/kataras/iris/v12"
 	"log"
+	"site/entity"
 	. "site/model"
 	"site/service"
 )
 
 type CommentController struct {
+	Ctx            iris.Context
 	CommentService service.CommentService
 }
 
@@ -19,4 +22,38 @@ func (c *CommentController) GetTop3() Response {
 	}
 
 	return SuccessWithData(comments)
+}
+
+// POST /comment
+func (c *CommentController) Post() Response {
+	var comment entity.Comment
+
+	if err := c.Ctx.ReadJSON(&comment); err != nil {
+		return FailWithError(err)
+	}
+
+	err := c.CommentService.Save(&comment)
+
+	if err != nil {
+		return FailWithError(err)
+	}
+
+	return SuccessWithData(comment)
+}
+
+// POST /comment/{commentId:string}/reply
+func (c *CommentController) PostByReply(commentId string) Response {
+	var reply entity.Reply
+
+	if err := c.Ctx.ReadJSON(&reply); err != nil {
+		return FailWithError(err)
+	}
+
+	comment, err := c.CommentService.Reply(commentId, &reply)
+
+	if err != nil {
+		return FailWithError(err)
+	}
+
+	return SuccessWithData(comment)
 }

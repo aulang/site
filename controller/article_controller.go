@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/kataras/iris/v12"
 	"log"
+	"site/entity"
 	. "site/model"
 	"site/service"
 )
@@ -40,7 +41,10 @@ func (c *ArticleController) GetPage() Response {
 	pageNo := c.Ctx.URLParamIntDefault("page", 1)
 	pageSize := c.Ctx.URLParamIntDefault("size", 1)
 
-	articles, err := c.ArticleService.Page(int64(pageNo), int64(pageSize))
+	keyword := c.Ctx.URLParam("keyword")
+	category := c.Ctx.URLParam("category")
+
+	articles, err := c.ArticleService.Page(int64(pageNo), int64(pageSize), keyword, category)
 	if err != nil {
 		return FailWithError(err)
 	}
@@ -68,4 +72,21 @@ func (c *ArticleController) GetPage() Response {
 	}
 
 	return SuccessWithData(results)
+}
+
+// POST /articles/page
+func (c *ArticleController) Post() Response {
+	var article entity.Article
+
+	if err := c.Ctx.ReadJSON(&article); err != nil {
+		return FailWithError(err)
+	}
+
+	err := c.ArticleService.Save(&article)
+
+	if err != nil {
+		return FailWithError(err)
+	}
+
+	return SuccessWithData(article)
 }

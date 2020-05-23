@@ -13,7 +13,7 @@ import (
 type CategoryService interface {
 	GetAll() ([]Category, error)
 
-	Save(a *Category) error
+	Save(category *Category) error
 }
 
 type categoryService struct {
@@ -50,21 +50,21 @@ func (s *categoryService) GetAll() ([]Category, error) {
 	return results, nil
 }
 
-func (s *categoryService) Save(m *Category) error {
-	if m.ID.IsZero() {
-		m.ID = primitive.NewObjectID()
-		_, err := s.c.InsertOne(s.ctx, m)
+func (s *categoryService) Save(category *Category) error {
+	if category.ID.IsZero() {
+		category.ID = primitive.NewObjectID()
+		_, err := s.c.InsertOne(s.ctx, category)
 
 		if err != nil {
 			return err
 		}
 	} else {
-		_id := m.ID
+		_id := category.ID
 
 		query := bson.D{{Key: "_id", Value: _id}}
 
 		update := bson.D{
-			{Key: "$set", Value: m},
+			{Key: "$set", Value: category},
 		}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update)

@@ -13,11 +13,10 @@ import (
 type ArticleService interface {
 	GetAll() ([]Article, error)
 	GetByID(id string) (Article, error)
-	Create(a *Article) error
-	Update(a Article) error
+	Save(a *Article) error
 	Delete(id string) error
 	GetTop3() ([]Article, error)
-	Page(pageNo, pageSize int64) ([]Article, error)
+	Page(pageNo, pageSize int64, keyword, category string) ([]Article, error)
 }
 
 type articleService struct {
@@ -74,36 +73,31 @@ func (s *articleService) GetByID(id string) (Article, error) {
 	return article, err
 }
 
-func (s *articleService) Create(a *Article) error {
-	if a.ID.IsZero() {
-		a.ID = primitive.NewObjectID()
-	}
+func (s *articleService) Save(article *Article) error {
+	if article.ID.IsZero() {
+		article.ID = primitive.NewObjectID()
+		_, err := s.c.InsertOne(s.ctx, category)
 
-	_, err := s.c.InsertOne(s.ctx, a)
+		if err != nil {
+			return err
+		}
+	} else {
+		_id := article.ID
 
-	if err != nil {
-		return err
-	}
+		query := bson.D{{Key: "_id", Value: _id}}
 
-	return nil
-}
-
-func (s *articleService) Update(a Article) error {
-	_id := a.ID
-
-	query := bson.D{{Key: "_id", Value: _id}}
-
-	update := bson.D{
-		{Key: "$set", Value: a},
-	}
-
-	_, err := s.c.UpdateOne(s.ctx, query, update)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return ErrNotFound
+		update := bson.D{
+			{Key: "$set", Value: category},
 		}
 
-		return err
+		_, err := s.c.UpdateOne(s.ctx, query, update)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				return ErrNotFound
+			}
+
+			return err
+		}
 	}
 
 	return nil
@@ -162,12 +156,25 @@ func (s *articleService) GetTop3() ([]Article, error) {
 	return results, nil
 }
 
-func (s *articleService) Page(pageNo, pageSize int64) ([]Article, error) {
+func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) ([]Article, error) {
 	skip := (pageNo - 1) * pageSize
 
 	ops := options.Find().SetSort(bson.D{{Key: "renew", Value: -1}}).SetSkip(skip).SetLimit(pageSize)
 
-	cur, err := s.c.Find(s.ctx, bson.D{}, ops)
+	filter := bson.M{}
+
+	if category != "" {
+		filter["categoryId"] = category
+	}
+
+	if keyword != "" {
+		filter["$or"] = bson.A{
+			bson.M{"title": bson.M{"$regex": keyword}},
+			bson.M{"subTitle": bson.M{"$regex": keyword}},
+		}
+	}
+
+	cur, err := s.c.Find(s.ctx, filter, ops)
 
 	if err != nil {
 		return nil, err

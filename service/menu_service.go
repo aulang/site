@@ -12,7 +12,7 @@ import (
 type MenuService interface {
 	GetAll() ([]Menu, error)
 
-	Save(a *Menu) error
+	Save(menu *Menu) error
 }
 
 type menuService struct {
@@ -49,21 +49,21 @@ func (s *menuService) GetAll() ([]Menu, error) {
 	return results, nil
 }
 
-func (s *menuService) Save(m *Menu) error {
-	if m.ID.IsZero() {
-		m.ID = primitive.NewObjectID()
-		_, err := s.c.InsertOne(s.ctx, m)
+func (s *menuService) Save(menu *Menu) error {
+	if menu.ID.IsZero() {
+		menu.ID = primitive.NewObjectID()
+		_, err := s.c.InsertOne(s.ctx, menu)
 
 		if err != nil {
 			return err
 		}
 	} else {
-		_id := m.ID
+		_id := menu.ID
 
 		query := bson.D{{Key: "_id", Value: _id}}
 
 		update := bson.D{
-			{Key: "$set", Value: m},
+			{Key: "$set", Value: menu},
 		}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update)
