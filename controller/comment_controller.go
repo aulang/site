@@ -6,6 +6,7 @@ import (
 	"site/entity"
 	. "site/model"
 	"site/service"
+	"time"
 )
 
 type CommentController struct {
@@ -32,6 +33,8 @@ func (c *CommentController) Post() Response {
 		return FailWithError(err)
 	}
 
+	comment.CreationDate = time.Now()
+
 	err := c.CommentService.Save(&comment)
 
 	if err != nil {
@@ -48,6 +51,8 @@ func (c *CommentController) PostByReply(commentId string) Response {
 	if err := c.Ctx.ReadJSON(&reply); err != nil {
 		return FailWithError(err)
 	}
+
+	reply.CreationDate = time.Now()
 
 	comment, err := c.CommentService.Reply(commentId, &reply)
 
