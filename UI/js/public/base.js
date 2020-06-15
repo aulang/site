@@ -1,3 +1,3 @@
-let apiUrl = 'http://localhost:8081/';
+let apiUrl = '/site/';
 
 export {apiUrl};
