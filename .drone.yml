@@ -21,6 +21,7 @@ steps:
     GOOS: linux
     GOARCH: amd64
     CGO_ENABLED: "0"
+    GOPROXY: https://goproxy.cn
   commands:
   - go build
   - docker build -t aulang/site .
