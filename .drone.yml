@@ -30,6 +30,7 @@ steps:
   commands:
   - docker stop site
   - docker rm site
+  - docker rmi $(docker images | grep "none" | awk '{print $3}')
 
 - name: deploy-frontend
   commands:
