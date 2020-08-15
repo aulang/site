@@ -1,12 +1,13 @@
 package controller
 
 import (
-	"github.com/kataras/iris/v12"
 	"log"
-	"site/entity"
-	. "site/model"
-	"site/service"
 	"time"
+
+	"github.com/aulang/site/entity"
+	. "github.com/aulang/site/model"
+	"github.com/aulang/site/service"
+	"github.com/kataras/iris/v12"
 )
 
 type CommentController struct {

@@ -1,0 +1,49 @@
+stages:
+  - build
+  - stop
+  - deploy
+
+go_build:
+  stage: build
+  only:
+    - master
+  script:
+    - export GOOS=linux
+    - export GOARCH=amd64
+    - export CGO_ENABLED=0
+    - export GOPROXY=https://goproxy.cn
+    - go build
+
+docker_build:
+  stage: build
+  only:
+    - master
+  dependencies:
+    - go_build
+  script:
+    - docker build -t aulang/site .
+
+stop_service:
+  stage: stop
+  only:
+    - master
+  script:
+    - docker stop site
+    - docker rm site
+    - docker rmi $(docker images | grep "none" | awk '{print $3}')
+
+deploy-frontend:
+  stage: deploy
+  only:
+    - master
+  script:
+    - rm -rf /usr/share/nginx/site/
+    - cp -rf ./UI/ /usr/share/nginx/site
+
+deploy-backend:
+  stage: deploy
+  only:
+    - master
+  script:
+    - rm -rf /var/log/site/*
+    - docker run -d -v /var/log/site:/var/log/site --name=site --net=host --restart=always aulang/site

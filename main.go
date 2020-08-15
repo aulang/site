@@ -1,14 +1,14 @@
 package main
 
 import (
+	"github.com/aulang/site/config"
+	"github.com/aulang/site/controller"
+	"github.com/aulang/site/model"
+	"github.com/aulang/site/service"
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/recover"
 	"github.com/kataras/iris/v12/mvc"
-	"site/config"
-	"site/controller"
-	"site/model"
-	"site/service"
 )
 
 func main() {

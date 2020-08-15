@@ -1,11 +1,12 @@
 package config
 
 import (
-	"github.com/kataras/iris/v12"
-	"gopkg.in/yaml.v2"
 	. "io/ioutil"
 	"log"
 	"strconv"
+
+	"github.com/kataras/iris/v12"
+	"gopkg.in/yaml.v2"
 )
 
 var Config = new(Yaml)

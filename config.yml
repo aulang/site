@@ -4,8 +4,8 @@ iris:
   enable-optimizations: true
   time-format: 2006-01-02 15:04:05
   remote-addr-headers:
-    X-Real-Ip: true
-    X-Forwarded-For: true
+    - X-Real-Ip
+    - X-Forwarded-For
 
 mongodb:
   uri:  mongodb://127.0.0.1:27017
