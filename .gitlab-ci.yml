@@ -3,7 +3,7 @@ stages:
   - stop
   - deploy
 
-go_build:
+build_image:
   stage: build
   only:
     - master
@@ -13,14 +13,6 @@ go_build:
     - export CGO_ENABLED=0
     - export GOPROXY=https://goproxy.cn
     - go build
-
-docker_build:
-  stage: build
-  only:
-    - master
-  dependencies:
-    - go_build
-  script:
     - docker build -t aulang/site .
 
 stop_service:
