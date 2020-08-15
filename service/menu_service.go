@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type MenuService interface {
@@ -21,8 +22,30 @@ type menuService struct {
 	ctx context.Context
 }
 
+func (s *menuService) getMaxOrder() int {
+	var order int = 1
+
+	ops := options.FindOne().SetSort(bson.D{{Key: "order", Value: -1}})
+	result := s.c.FindOne(s.ctx, bson.D{}, ops)
+
+	if result.Err() != nil {
+		return order
+	}
+
+	var elem Menu
+	err := result.Decode(&elem)
+
+	if err != nil {
+		return order
+	}
+
+	return elem.Order
+}
+
 func (s *menuService) GetAll() ([]Menu, error) {
-	cur, err := s.c.Find(s.ctx, bson.D{})
+	ops := options.Find().SetSort(bson.D{{Key: "order", Value: 1}})
+
+	cur, err := s.c.Find(s.ctx, bson.D{}, ops)
 
 	if err != nil {
 		return nil, err
@@ -53,6 +76,9 @@ func (s *menuService) GetAll() ([]Menu, error) {
 func (s *menuService) Save(menu *Menu) error {
 	if menu.ID.IsZero() {
 		menu.ID = primitive.NewObjectID()
+
+		menu.Order = s.getMaxOrder()
+
 		_, err := s.c.InsertOne(s.ctx, menu)
 
 		if err != nil {

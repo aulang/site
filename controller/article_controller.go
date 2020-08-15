@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"github.com/kataras/iris/v12"
 	"log"
+
 	. "github.com/aulang/site/model"
 	"github.com/aulang/site/service"
+	"github.com/kataras/iris/v12"
 )
 
 type ArticleController struct {
@@ -61,10 +62,6 @@ func (c *ArticleController) GetPage() Response {
 
 		if err != nil {
 			log.Printf("查询文章评论失败，%v", err)
-		}
-
-		if comments != nil {
-			article.CommentsCount += len(comments)
 		}
 
 		results = append(results, ArticleComment{Article: article, Comments: comments})

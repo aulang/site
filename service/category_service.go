@@ -22,8 +22,30 @@ type categoryService struct {
 	ctx context.Context
 }
 
+func (s *categoryService) getMaxOrder() int {
+	var order int = 1
+
+	ops := options.FindOne().SetSort(bson.D{{Key: "order", Value: -1}})
+	result := s.c.FindOne(s.ctx, bson.D{}, ops)
+
+	if result.Err() != nil {
+		return order
+	}
+
+	var elem Category
+	err := result.Decode(&elem)
+
+	if err != nil {
+		return order
+	}
+
+	return elem.Order
+}
+
 func (s *categoryService) GetAll() ([]Category, error) {
-	cur, err := s.c.Find(s.ctx, bson.D{})
+	ops := options.Find().SetSort(bson.D{{Key: "order", Value: 1}})
+
+	cur, err := s.c.Find(s.ctx, bson.D{}, ops)
 
 	if err != nil {
 		return nil, err
@@ -54,6 +76,9 @@ func (s *categoryService) GetAll() ([]Category, error) {
 func (s *categoryService) Save(category *Category) error {
 	if category.ID.IsZero() {
 		category.ID = primitive.NewObjectID()
+
+		category.Order = s.getMaxOrder()
+
 		_, err := s.c.InsertOne(s.ctx, category)
 
 		if err != nil {

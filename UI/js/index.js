@@ -141,7 +141,21 @@ let author = new Vue({
         website: 'https://aulang.cn',
         email: 'aulang@qq.com',
         github: 'https://github.com/aulang',
-        hitokoto: '醉后不知天在水 满船清梦压星河'
+        wechat: 'aulang88',
+        wechatQRCode: './images/wechat.png',
+        hitokoto: '醉后不知天在水 满船清梦压星河',
+        avatarTmp: null
+    },
+    methods: {
+        showQRCode: function() {
+            this.avatarTmp = this.avatar;
+            this.avatar = this.wechatQRCode;
+        },
+        hideQRCode: function() {
+            if (this.avatarTmp) {
+                this.avatar = this.avatarTmp;
+            }
+        }
     }
 });
 
