@@ -1,6 +1,6 @@
 package model
 
-import "site/entity"
+import "github.com/aulang/site/entity"
 
 // 文章和评论
 type ArticleComment struct {

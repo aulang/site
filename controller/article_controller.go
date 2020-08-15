@@ -3,8 +3,8 @@ package controller
 import (
 	"github.com/kataras/iris/v12"
 	"log"
-	. "site/model"
-	"site/service"
+	. "github.com/aulang/site/model"
+	"github.com/aulang/site/service"
 )
 
 type ArticleController struct {

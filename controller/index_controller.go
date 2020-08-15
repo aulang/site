@@ -1,6 +1,6 @@
 package controller
 
-import . "site/model"
+import . "github.com/aulang/site/model"
 
 type IndexController struct {
 }

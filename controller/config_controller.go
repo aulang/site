@@ -2,8 +2,9 @@ package controller
 
 import (
 	"log"
-	. "site/model"
-	"site/service"
+
+	. "github.com/aulang/site/model"
+	"github.com/aulang/site/service"
 )
 
 type WebConfigController struct {

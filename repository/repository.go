@@ -2,10 +2,11 @@ package repository
 
 import (
 	"context"
+	"log"
+
+	"github.com/aulang/site/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
-	"site/config"
 )
 
 var database *mongo.Database = nil
