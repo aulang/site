@@ -22,6 +22,13 @@ stop_service:
   script:
     - docker stop site
     - docker rm site
+
+delete_none_image:
+  stage: deploy
+  only:
+    - master
+  allow_failure: true
+  script:
     - docker rmi $(docker images | grep "none" | awk '{print $3}')
 
 deploy-frontend:
