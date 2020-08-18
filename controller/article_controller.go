@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"errors"
 	"log"
 
+	"github.com/aulang/site/entity"
 	. "github.com/aulang/site/model"
 	"github.com/aulang/site/service"
 	"github.com/kataras/iris/v12"
@@ -41,21 +43,31 @@ func (c *ArticleController) GetPage() Response {
 	pageNo := c.Ctx.URLParamIntDefault("page", 1)
 	pageSize := c.Ctx.URLParamIntDefault("size", 1)
 
+	if pageNo < 1 {
+		pageNo = 1
+	}
+
+	if pageSize < 1 {
+		pageSize = 1
+	}
+
 	keyword := c.Ctx.URLParam("keyword")
 	category := c.Ctx.URLParam("category")
 
-	articles, err := c.ArticleService.Page(int64(pageNo), int64(pageSize), keyword, category)
+	page, err := c.ArticleService.Page(int64(pageNo), int64(pageSize), keyword, category)
 	if err != nil {
 		return FailWithError(err)
 	}
 
-	if articles == nil {
-		SuccessWithData(nil)
-	}
+	var results []interface{}
 
-	var results []ArticleComment
+	for _, data := range page.Datas {
+		article, ok := data.(entity.Article)
 
-	for _, article := range articles {
+		if !ok {
+			return FailWithError(errors.New("类型转换错误"))
+		}
+
 		articleId := article.ID.Hex()
 
 		comments, err := c.CommentService.FindByArticleId(articleId)
@@ -67,5 +79,7 @@ func (c *ArticleController) GetPage() Response {
 		results = append(results, ArticleComment{Article: article, Comments: comments})
 	}
 
-	return SuccessWithData(results)
+	page.Datas = results
+
+	return SuccessWithData(page)
 }

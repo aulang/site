@@ -127,16 +127,16 @@ function initArticle() {
                 return;
             }
 
-            if (!response.data.data) {
+            if (!response.data.data.datas) {
                 return;
             }
 
-            let data = response.data.data;
+            let datas = response.data.data.datas;
 
-            article.currArticle = data[0];
+            article.currArticle = datas[0];
 
-            if (data.length > 1) {
-                article.preArticle = data[1];
+            if (datas.length > 1) {
+                article.preArticle = datas[1];
             }
         })
         .catch(function (error) {

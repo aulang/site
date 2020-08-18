@@ -4,6 +4,7 @@ import (
 	"context"
 
 	. "github.com/aulang/site/entity"
+	"github.com/aulang/site/model"
 	"github.com/aulang/site/repository"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,7 +18,7 @@ type ArticleService interface {
 	Save(a *Article) error
 	Delete(id string) error
 	GetTop3() ([]Article, error)
-	Page(pageNo, pageSize int64, keyword, category string) ([]Article, error)
+	Page(pageNo, pageSize int64, keyword, category string) (model.Page, error)
 }
 
 type articleService struct {
@@ -157,7 +158,9 @@ func (s *articleService) GetTop3() ([]Article, error) {
 	return results, nil
 }
 
-func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) ([]Article, error) {
+func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) (model.Page, error) {
+	var page model.Page
+
 	skip := (pageNo - 1) * pageSize
 
 	ops := options.Find().SetSort(bson.D{{Key: "renew", Value: -1}}).SetSkip(skip).SetLimit(pageSize)
@@ -175,32 +178,42 @@ func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) 
 		}
 	}
 
+	count, err := s.c.CountDocuments(s.ctx, filter)
+	if err != nil {
+		return page, err
+	}
+
 	cur, err := s.c.Find(s.ctx, filter, ops)
 
 	if err != nil {
-		return nil, err
+		return page, err
 	}
 
 	defer cur.Close(s.ctx)
 
-	var results []Article
+	var datas []interface{}
 
 	for cur.Next(s.ctx) {
 		if err = cur.Err(); err != nil {
-			return nil, err
+			return page, err
 		}
 
 		var elem Article
 		err = cur.Decode(&elem)
 
 		if err != nil {
-			return nil, err
+			return page, err
 		}
 
-		results = append(results, elem)
+		datas = append(datas, elem)
 	}
 
-	return results, nil
+	page.Datas = datas
+	page.PageNo = pageNo
+	page.PageSize = pageNo
+	page.TotalPages = (count + pageSize - 1) / pageSize
+
+	return page, nil
 }
 
 var _ ArticleService = (*articleService)(nil)

@@ -47,40 +47,33 @@
             <div class="container" id="articles">
                 <table class="table">
                     <tbody>
-                        <tr>
+                        <tr v-for="(article, index) in articles">
                             <td scope="row">
-                                <h5>唯心无穷</h5>
-                                <p><small>
-                                    评论数：<span>3</span>&emsp;|&emsp;更新时间：<span>2020-08-17 22:20</span>&emsp;|&emsp;文章分类：<span>散文随笔</span></small></p>
-                                <p>  我知道我是永远回不到从前了，虽然我一直努力地使我自己保持不变，我只是不想哪一天她突然回来时发现我已经不是从前的那个我了。我独自等待，不奢求天长地久。<br>  有时我也会很累，我问自己放弃是什么，我能不能做到，只是恍惚中发现原来自己一直活在自己的梦中，我想醒来，却又怀疑醒来了，不过是从一场梦跳到另一场梦中呢？我不断告诉自己人生只是个囚笼。我们讨厌笼子，却会觉得呆在里面很安全。囚住了我们的身，却囚不住心，心是无穷。</p>
-                                <p class="text-right"><a class="text-info" href="#">阅读全文</a></p>
+                                <h5 v-text="article.title"></h5>
+                                <p>
+                                    <small>评论数：<span v-text="article.commentsCount"></span>&emsp;|&emsp;更新时间：<span v-text="article.renew"></span>&emsp;|&emsp;文章分类：<span v-text="article.categoryName"></span></small>
+                                </p>
+                                <div v-html="article.summary"></div>
+                                <p class="text-right"><a class="text-info" :href="'./article.html?id=' + article.id">阅读全文</a></p>
                             </td>
                         </tr>
-                        <tr>
-                            <td scope="row">
-                                <h5>唯心无穷</h5>
-                                <p><small>
-                                    评论数：<span>3</span>&emsp;|&emsp;更新时间：<span>2020-08-17 22:20</span>&emsp;|&emsp;文章分类：<span>散文随笔</span></small></p>
-                                <p>  我知道我是永远回不到从前了，虽然我一直努力地使我自己保持不变，我只是不想哪一天她突然回来时发现我已经不是从前的那个我了。我独自等待，不奢求天长地久。<br>  有时我也会很累，我问自己放弃是什么，我能不能做到，只是恍惚中发现原来自己一直活在自己的梦中，我想醒来，却又怀疑醒来了，不过是从一场梦跳到另一场梦中呢？我不断告诉自己人生只是个囚笼。我们讨厌笼子，却会觉得呆在里面很安全。囚住了我们的身，却囚不住心，心是无穷。</p>
-                                <p class="text-right"><a class="text-info" href="#">阅读全文</a></p>
-                            </td>
+                        <tr v-show="articles.length == 0">
+                            <td class="text-center">暂无数据</td>
                         </tr>
                     </tbody>
                 </table>
                 <nav>
                     <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
+                        <li class="page-item" :class="{disabled: noPrevious}">
+                            <a class="page-link" href="#" @click="goPage(page-1)"><span>&laquo;</span></a>
                         </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
+
+                        <li class="page-item" v-for="index in totalPages">
+                            <a class="page-link" href="#" @click="goPage(index - 1)" v-text="index"></a>
+                        </li>
+
+                        <li class="page-item" :class="{disabled: noNext}">
+                            <a class="page-link" href="#" @click="goPage(page+1)"><span>&raquo;</span></a>
                         </li>
                     </ul>
                 </nav>
