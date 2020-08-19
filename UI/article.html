@@ -49,8 +49,66 @@
                 <p>
                     <small>评论数：<span v-text="article.commentsCount"></span>&emsp;|&emsp;更新时间：<span v-text="article.renew"></span>&emsp;|&emsp;文章分类：<span v-text="article.categoryName"></span></small>
                 </p>
-                <div v-html="article.content">
+                <div class="row mb-3" v-html="article.content"></div>
 
+                <div class="row">
+                    <form class="w-100" @submit.prevent="submit">
+                        <div class="form-group">
+                            <textarea name="content" class="form-control" rows="3" required="required" v-model="comment.content"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-5 mb-3">
+                                <input name="name" type="text" class="form-control" required="required" placeholder="昵称" v-model="comment.name">
+                            </div>
+                            <div class="col-5 mb-3">
+                                <input name="mail" type="email" class="form-control" required="required" placeholder="邮箱" v-model="comment.mail">
+                            </div>
+                            <div class="col-2 mb-3 float-right">
+                                <button class="btn btn-info form-control" type="submit">发表评论</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="row">
+                    <p>已有<span v-text="article.commentsCount"></span>条评论</p>
+
+                    <div class="container">
+                        <div class="row" v-for="comment in article.comments">
+                            <div class="col-lg-1">
+                                <i class="fas fa-user fa-3x text-primary"></i>
+                            </div>
+                            <div class="col-sm-12 col-md-11 col-lg-11">
+                                <p class="text-wrap text-break">
+                                    <a :href="'#' + comment.id" v-text="comment.name"></a>
+                                    <span>:</span>
+                                    <span v-text="comment.content"></span>
+                                </p>
+                                <p class="text-muted">
+                                    <span v-text="comment.creationDate"></span>
+                                </p>
+                            </div>
+
+                            <div class="container bg-light mx-3" v-for="reply in comment.replies">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <i class="fas fa-user fa-2x text-primary"></i>
+                                    </div>
+                                    <div class="col-sm-12 col-md-11 col-lg-11">
+                                        <p class="text-wrap text-break">
+                                            <a :href="'./article.html?id=' + comment.articleId + '#' + comment.id"
+                                               v-text="reply.name"></a>
+                                            <span>:</span>
+                                            <span v-text="reply.content"></span>
+                                        </p>
+                                        <p class="text-muted">
+                                            <span v-text="reply.creationDate"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

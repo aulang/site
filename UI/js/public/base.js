@@ -1,3 +1,3 @@
-let apiUrl = 'https://aulang.cn/site/';
+let apiUrl = '/site/';
 
 export {apiUrl};
