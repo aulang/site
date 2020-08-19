@@ -24,7 +24,16 @@ func (c *ArticleController) GetBy(id string) Response {
 		return Fail(-1, "记录不存在")
 	}
 
-	return SuccessWithData(article)
+	articleId := article.ID.Hex()
+	comments, err := c.CommentService.FindByArticleId(articleId)
+
+	if err != nil {
+		log.Printf("查询文章评论失败，%v", err)
+	}
+
+	ac := ArticleComment{Article: article, Comments: comments}
+
+	return SuccessWithData(ac)
 }
 
 // GET /articles/top3

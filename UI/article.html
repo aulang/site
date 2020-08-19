@@ -11,9 +11,176 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js" defer></script>
+    <script type="module" src="./js/layout.js"></script>
     <script type="module" src="./js/article.js"></script>
 </head>
 <body>
-    <p>article</p>
+<div class="container" id="header">
+    <div class="row mt-3">
+        <div class="col-sm-12 col-md-9 col-lg-9">
+            <div class="row">
+                <a href="https://aulang.cn" class="nav-link">
+                    <strong v-text="title"></strong>
+                </a>
+
+                <a class="nav-link text-muted"
+                   v-for="menu in menus" :href="menu.url" :title="menu.desc" :target="menu.target" v-text="menu.name">
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3 col-lg-3">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="输入关键字搜索" v-model="keyword" @keyup.enter="search">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="keyword-search" @click="search">
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-9 col-lg-9">
+            <div class="container" id="article">
+                <h5 v-text="article.title"></h5>
+                <p>
+                    <small>评论数：<span v-text="article.commentsCount"></span>&emsp;|&emsp;更新时间：<span v-text="article.renew"></span>&emsp;|&emsp;文章分类：<span v-text="article.categoryName"></span></small>
+                </p>
+                <div v-html="article.content">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3">
+            <div class="container border rounded" id="author">
+                <div class="row">
+                    <div class="text-center mt-2 w-100">
+                        <img :src="avatar" class="rounded img-thumbnail"
+                             style="width: 60%"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <p class="text-center mt-2 w-100">
+                        <strong v-text="author"></strong>
+                    </p>
+                </div>
+
+                <div class="row">
+                    <p class="text-center w-100">
+                        <a :href="'mailto:' + email" class="mr-2">
+                            <i class="far fa-envelope fa-lg text-success"></i>
+                        </a>
+                        <a :href="website" class="mr-2" target="_blank">
+                            <i class="fab fa-internet-explorer fa-lg text-success"></i>
+                        </a>
+                        <a :href="github" class="mr-2" target="_blank">
+                            <i class="fab fa-github fa-lg text-success"></i>
+                        </a>
+                        <a href="javascript:;" @mouseover="showQRCode" @mouseout="hideQRCode">
+                            <i class="fab fa-weixin fa-lg text-success"></i>
+                        </a>
+                    </p>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="text-center w-100 border rounded mx-2">
+                        <span class="text-wrap text-break" v-text="hitokoto"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mt-2">
+                <div class="row" id="top3Articles">
+                    <div class="card w-100" style="width: 18rem;">
+                        <div class="card-header h5 py-2">
+                            最新文章
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item py-2" v-for="article in articles">
+                                <i class="fas fa-caret-right fa-lg text-success">&nbsp;</i>
+                                <a class="text-success" :href="'./article.html?id=' + article.id" v-text="article.title"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mt-2">
+                <div class="row" id="top3Comments">
+                    <div class="card w-100" style="width: 18rem;">
+                        <div class="card-header h5 py-2">
+                            最近评论
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item py-2" v-for="comment in comments">
+                                <div class="text-truncate">
+                                    <i class="fas fa-user text-primary"></i>
+                                    <a :href="'./article.html?id=' + comment.articleId + '#' + comment.id"
+                                       v-text="comment.name"></a>
+                                    <span>:</span>
+                                    <span v-text="comment.content"></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mt-2">
+                <div class="row" id="category">
+                    <div class="card w-100" style="width: 18rem;">
+                        <div class="card-header h5 py-2">
+                            文章分类
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item py-2" v-for="category in categories">
+                                <a class="pr-2 text-success" :href="'./page.html?category=' + category.id">
+                                    <i class="fa fa-book">&nbsp;</i>
+                                    <span v-text="category.name"></span>
+                                </a>
+                                <span class="badge badge-primary" v-text="category.count"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mt-2">
+                <div class="row" id="links">
+                    <div class="card w-100" style="width: 18rem;">
+                        <div class="card-header h5 py-2">
+                            友情链接
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item py-2" v-for="link in links">
+                                <a class="text-success" target="_blank" :href="link.url" :title="link.desc" v-text="link.title"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="mt-auto py-2" style="background-color: #f5f5f5">
+    <div class="container text-center text-muted" id="beiAn">
+        <span v-text="copyright"></span>
+
+        <span>
+            <a class="text-muted" target="_blank" :href="miit.url" v-text="miit.no"></a>
+        </span>
+
+        <span>
+            <img src="./images/beian.png"/>
+            <a class="text-muted" target="_blank" :href="mps.url" v-text="mps.no"></a>
+        </span>
+    </div>
+</footer>
 </body>
 </html>

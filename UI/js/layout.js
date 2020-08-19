@@ -1,4 +1,5 @@
 import {apiUrl} from './public/base.js';
+import {urlParam} from './public/url.js'
 import {storage} from './public/storage.js';
 
 let header = new Vue({
@@ -12,7 +13,14 @@ let header = new Vue({
         search: function () {
             let that = this;
             if (that.keyword) {
-                window.location.assign('./page.html?keyword=' + that.keyword);
+                let url = './page.html?keyword=' + that.keyword;
+
+                let categoryId = urlParam('category');
+                if (categoryId) {
+                    url = url + '&category=' + categoryId;
+                }
+
+                window.location.assign(url);
             }
         }
     }

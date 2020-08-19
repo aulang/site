@@ -30,7 +30,7 @@
         </div>
         <div class="col-md-3 col-lg-3">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="输入关键字搜索" v-model="keyword">
+                <input type="text" class="form-control" placeholder="输入关键字搜索" v-model="keyword" @keyup.enter="search">
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="button" id="keyword-search" @click="search">
                         <i class="fa fa-paper-plane"></i>
@@ -65,15 +65,15 @@
                 <nav>
                     <ul class="pagination justify-content-center">
                         <li class="page-item" :class="{disabled: noPrevious}">
-                            <a class="page-link" href="#" @click="goPage(page-1)"><span>&laquo;</span></a>
+                            <a class="page-link" href="javascript:;" @click="goPage(page-1)"><span>&laquo;</span></a>
                         </li>
 
                         <li class="page-item" v-for="index in totalPages">
-                            <a class="page-link" href="#" @click="goPage(index - 1)" v-text="index"></a>
+                            <a class="page-link" href="javascript:;" @click="goPage(index - 1)" v-text="index"></a>
                         </li>
 
                         <li class="page-item" :class="{disabled: noNext}">
-                            <a class="page-link" href="#" @click="goPage(page+1)"><span>&raquo;</span></a>
+                            <a class="page-link" href="javascript:;" @click="goPage(page+1)"><span>&raquo;</span></a>
                         </li>
                     </ul>
                 </nav>
@@ -106,7 +106,7 @@
                         <a :href="github" class="mr-2" target="_blank">
                             <i class="fab fa-github fa-lg text-success"></i>
                         </a>
-                        <a @mouseover="showQRCode" @mouseout="hideQRCode">
+                        <a href="javascript:;" @mouseover="showQRCode" @mouseout="hideQRCode">
                             <i class="fab fa-weixin fa-lg text-success"></i>
                         </a>
                     </p>

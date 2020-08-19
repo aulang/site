@@ -30,7 +30,7 @@
         </div>
         <div class="col-md-3 col-lg-3">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="输入关键字搜索" v-model="keyword">
+                <input type="text" class="form-control" placeholder="输入关键字搜索" v-model="keyword" @keyup.enter="search">
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="button" id="keyword-search" @click="search">
                         <i class="fa fa-paper-plane"></i>
@@ -53,12 +53,12 @@
                 <div class="row">
                     <div class="w-100">
                         <div class="border rounded py-1 d-flex justify-content-between">
-                            <a class="text-decoration-none"
+                            <a class="text-decoration-none" href="javascript:;"
                                :class="{'text-success': pre.success, 'text-muted': !pre.success}"
                                @click="goPre">
                                 <i class="fas fa-arrow-left">&nbsp;</i><span v-text="pre.title"></span>
                             </a>
-                            <a class="text-decoration-none"
+                            <a class="text-decoration-none" href="javascript:;"
                                :class="{'text-success': next.success, 'text-muted': !next.success}"
                                @click="goNext">
                                 <span v-text="next.title"></span>&nbsp;<i class="fas fa-arrow-right"></i>
@@ -139,7 +139,7 @@
                         <a :href="github" class="mr-2" target="_blank">
                             <i class="fab fa-github fa-lg text-success"></i>
                         </a>
-                        <a @mouseover="showQRCode" @mouseout="hideQRCode">
+                        <a href="javascript:;" @mouseover="showQRCode" @mouseout="hideQRCode">
                             <i class="fab fa-weixin fa-lg text-success"></i>
                         </a>
                     </p>

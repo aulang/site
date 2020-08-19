@@ -1,3 +1,3 @@
-let apiUrl = 'http://127.0.0.1:8081/';
+let apiUrl = 'https://aulang.cn/site/';
 
 export {apiUrl};
