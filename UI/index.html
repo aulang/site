@@ -46,8 +46,8 @@
         <div class="col-sm-12 col-md-9 col-lg-9">
             <div class="container" id="article">
                 <div class="row">
-                    <div class="jumbotron mb-1 w-100" @click="goArticle">
-                        <h5 v-html="currArticle.title"></h5>
+                    <div class="jumbotron mb-1 w-100">
+                        <h5 style="cursor:pointer" v-html="currArticle.title" @click="goArticle"></h5>
                         <div v-html="currArticle.summary"></div>
                     </div>
                 </div>
