@@ -10,6 +10,10 @@ let article = new Vue({
         nextArticle: {}
     },
     methods: {
+        goArticle: function () {
+            let url = './article.html?id=' + this.currArticle.id;
+            window.location.assign(url);
+        },
         goPre: function () {
             let that = this;
             if (!that.preArticle || !that.preArticle.id) {
@@ -85,10 +89,6 @@ let article = new Vue({
         }
     },
     computed: {
-        goArticle: function () {
-            let url = './article.html?id=' + this.currArticle.id;
-            window.location.assign(url);
-        },
         pre: function () {
             let that = this;
             if (that.preArticle && that.preArticle.id) {
