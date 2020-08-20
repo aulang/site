@@ -43,7 +43,7 @@ func (c *CommentController) Post() Response {
 		return FailWithError(err)
 	}
 
-	article, err := c.ArticleService.GetByID(comment.ArticleId)
+	article, err := c.ArticleService.GetByID(comment.ArticleID)
 	if err == nil {
 		article.CommentsCount++
 		c.ArticleService.Save(&article)

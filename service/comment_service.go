@@ -58,7 +58,7 @@ func (s *commentService) GetTop3() ([]Comment, error) {
 func (s *commentService) FindByArticleId(articleId string) ([]Comment, error) {
 	ops := options.Find().SetSort(bson.D{{Key: "creationDate", Value: 1}})
 
-	cur, err := s.c.Find(s.ctx, bson.D{{"articleId", articleId}}, ops)
+	cur, err := s.c.Find(s.ctx, bson.D{{Key: "articleId", Value: articleId}}, ops)
 
 	if err != nil {
 		return nil, err
@@ -166,7 +166,7 @@ func NewCommentService() CommentService {
 func init() {
 	indexes := [...]mongo.IndexModel{
 		{
-			Keys:    bson.M{"comment": -1},
+			Keys:    bson.M{"articleId": -1},
 			Options: options.Index().SetName("ik_comment_articleId").SetBackground(true),
 		},
 	}
