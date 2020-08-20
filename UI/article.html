@@ -80,7 +80,7 @@
                             </div>
                             <div class="col-sm-12 col-md-11 col-lg-11">
                                 <p class="text-wrap text-break">
-                                    <a :href="'#' + comment.id" v-text="comment.name"></a>
+                                    <a :id="comment.id" v-text="comment.name"></a>
                                     <span>:</span>
                                     <span v-text="comment.content"></span>
                                 </p>
