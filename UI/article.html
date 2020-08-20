@@ -80,7 +80,7 @@
                             </div>
                             <div class="col-sm-12 col-md-11 col-lg-11">
                                 <p class="text-wrap text-break">
-                                    <a :id="comment.id" v-text="comment.name"></a>
+                                    <a href="javascript:;" :id="comment.id" v-text="comment.name"></a>
                                     <span>:</span>
                                     <span v-text="comment.content"></span>
                                 </p>
@@ -96,8 +96,7 @@
                                     </div>
                                     <div class="col-sm-12 col-md-11 col-lg-11">
                                         <p class="text-wrap text-break">
-                                            <a :href="'./article.html?id=' + comment.articleId + '#' + comment.id"
-                                               v-text="reply.name"></a>
+                                            <a href="javascript:;" v-text="reply.name"></a>
                                             <span>:</span>
                                             <span v-text="reply.content"></span>
                                         </p>

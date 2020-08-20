@@ -31,7 +31,7 @@ let article = new Vue({
 
                 article.article.comments.push(res.data.data);
 
-                article.commentsCount += 1;
+                article.article.commentsCount += 1;
             }).catch(err => {
                 console.log(err);
             });
@@ -49,7 +49,6 @@ function getArticle(id) {
             }
 
             article.article = response.data.data;
-            // article.comments
         })
         .catch(function (error) {
             console.log(error);

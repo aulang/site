@@ -1,7 +1,7 @@
 package config
 
 import (
-	. "io/ioutil"
+	"io/ioutil"
 	"log"
 	"strconv"
 
@@ -12,7 +12,7 @@ import (
 var Config = new(Yaml)
 
 func init() {
-	configFile, err := ReadFile("config.yml")
+	configFile, err := ioutil.ReadFile("config.yml")
 
 	if err != nil {
 		log.Fatalf("加载配置文件失败，%v", err)

@@ -1,5 +1,5 @@
-import {apiUrl} from './public/base.js';
-import {storage} from './public/storage.js';
+import { apiUrl } from './public/base.js';
+import { storage } from './public/storage.js';
 
 let article = new Vue({
     el: '#article',
@@ -85,6 +85,10 @@ let article = new Vue({
         }
     },
     computed: {
+        goArticle: function () {
+            let url = './article.html?id=' + this.currArticle.id;
+            window.location.assign(url);
+        },
         pre: function () {
             let that = this;
             if (that.preArticle && that.preArticle.id) {
