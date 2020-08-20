@@ -78,7 +78,7 @@ func (s *articleService) GetByID(id string) (Article, error) {
 func (s *articleService) Save(article *Article) error {
 	if article.ID.IsZero() {
 		article.ID = primitive.NewObjectID()
-		_, err := s.c.InsertOne(s.ctx, category)
+		_, err := s.c.InsertOne(s.ctx, article)
 
 		if err != nil {
 			return err
@@ -89,7 +89,7 @@ func (s *articleService) Save(article *Article) error {
 		query := bson.D{{Key: "_id", Value: _id}}
 
 		update := bson.D{
-			{Key: "$set", Value: category},
+			{Key: "$set", Value: article},
 		}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update)
