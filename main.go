@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/aulang/site/config"
 	"github.com/aulang/site/controller"
+	"github.com/aulang/site/controller/admin"
+	"github.com/aulang/site/middleware/oauth"
 	"github.com/aulang/site/model"
 	"github.com/aulang/site/service"
 	"github.com/iris-contrib/middleware/cors"
@@ -50,6 +52,14 @@ func initMVC(mvcApp *mvc.Application) {
 	mvcApp.Party("/articles", crs).Handle(new(controller.ArticleController))
 	// 评论
 	mvcApp.Party("/comment", crs).Handle(new(controller.CommentController))
+
+	// OAuth
+	oauth := oauth.New()
+	// Admin
+	adminMvc := mvcApp.Party("/admin", crs, oauth)
+
+	adminMvc.Party("/article").Handle(new(admin.ArticleController))
+
 }
 
 func errorHandler(ctx iris.Context, err error) {
