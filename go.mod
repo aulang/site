@@ -12,6 +12,7 @@ require (
 	github.com/nats-io/nats-server/v2 v2.1.7 // indirect
 	github.com/onsi/ginkgo v1.14.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
+	github.com/square/go-jose/v3 v3.0.0-20200630053402-0a67ce9b0693
 	github.com/yudai/pp v2.0.1+incompatible // indirect
 	go.mongodb.org/mongo-driver v1.4.0
 	gopkg.in/yaml.v2 v2.3.0

@@ -21,7 +21,7 @@ func main() {
 
 	initMVC(mvc.New(app))
 
-	app.Listen(":"+config.Port(), config.Iris())
+	_ = app.Listen(":"+config.Port(), config.Iris())
 }
 
 func initMVC(mvcApp *mvc.Application) {
@@ -39,6 +39,7 @@ func initMVC(mvcApp *mvc.Application) {
 	mvcApp.Register(service.NewCategoryService())
 	mvcApp.Register(service.NewArticleService())
 	mvcApp.Register(service.NewCommentService())
+	mvcApp.Register(oauth.New(config.Config.OAuth.ClientId, config.Config.OAuth.ClientSecret))
 
 	// ROOT
 	mvcApp.Handle(new(controller.IndexController))
@@ -53,15 +54,13 @@ func initMVC(mvcApp *mvc.Application) {
 	// 评论
 	mvcApp.Party("/comment", crs).Handle(new(controller.CommentController))
 
-	// OAuth
-	oauth := oauth.New()
 	// Admin
-	adminMvc := mvcApp.Party("/admin", crs, oauth)
+	adminMvc := mvcApp.Party("/admin", crs)
 
 	adminMvc.Party("/article").Handle(new(admin.ArticleController))
 
 }
 
 func errorHandler(ctx iris.Context, err error) {
-	ctx.JSON(model.FailWithError(err))
+	_, _ = ctx.JSON(model.FailWithError(err))
 }

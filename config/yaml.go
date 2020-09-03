@@ -12,4 +12,8 @@ type Yaml struct {
 		Uri      string `yaml:"uri"`
 		Database string `yaml:"database"`
 	}
+	OAuth struct {
+		ClientId     string `yaml:"client-id"`
+		ClientSecret string `yaml:"client-secret"`
+	}
 }
