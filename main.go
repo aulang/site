@@ -35,11 +35,12 @@ func initMVC(mvcApp *mvc.Application) {
 
 	// Service注册
 	mvcApp.Register(service.NewWebConfigService())
-	mvcApp.Register(service.NewMenuService())
 	mvcApp.Register(service.NewCategoryService())
 	mvcApp.Register(service.NewArticleService())
 	mvcApp.Register(service.NewCommentService())
-	mvcApp.Register(oauth.New(config.Config.OAuth.ClientId, config.Config.OAuth.ClientSecret))
+	mvcApp.Register(service.NewAuthService())
+	mvcApp.Register(service.NewMenuService())
+	mvcApp.Register(oauth.New())
 
 	// ROOT
 	mvcApp.Handle(new(controller.IndexController))

@@ -3,6 +3,7 @@ package oauth
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/aulang/site/service"
 	"github.com/aulang/site/util"
 	"github.com/kataras/iris/v12/context"
 	"io/ioutil"
@@ -43,10 +44,13 @@ const (
 	AuthorizeUrl = "https://aulang.cn/oauth/authorize?client_id=%s&response_type=%s&state=%s&redirect_uri=%s"
 )
 
-func New(clientId, clientSecret string) *OAuth {
+func New() *OAuth {
+	authService := service.NewAuthService()
+	auth := authService.Get()
+
 	return &OAuth{
-		clientId:        clientId,
-		clientSecret:    clientSecret,
+		clientId:        auth.ClientId,
+		clientSecret:    auth.ClientSecret,
 		redirectUrl:     "https://aulang.cn/site/admin/login",
 		codeMode:        true,
 		codeKey:         "code",

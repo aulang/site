@@ -22,7 +22,7 @@ func (c *IndexController) GetLogin() {
 }
 
 // GET /token
-func (c *IndexController) GetUser() Response {
+func (c *IndexController) GetToken() Response {
 	accessToken := c.OAuth.Token(c.Ctx)
 
 	if accessToken == nil {
@@ -33,5 +33,8 @@ func (c *IndexController) GetUser() Response {
 	if err != nil {
 		return FailWithError(err)
 	}
+
+	// TODO JWT
+
 	return SuccessWithData(user)
 }
