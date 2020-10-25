@@ -38,9 +38,7 @@ func initMVC(mvcApp *mvc.Application) {
 	mvcApp.Register(service.NewCategoryService())
 	mvcApp.Register(service.NewArticleService())
 	mvcApp.Register(service.NewCommentService())
-	mvcApp.Register(service.NewAuthService())
 	mvcApp.Register(service.NewMenuService())
-	mvcApp.Register(oauth.New())
 
 	// ROOT
 	mvcApp.Handle(new(controller.IndexController))
@@ -55,8 +53,9 @@ func initMVC(mvcApp *mvc.Application) {
 	// 评论
 	mvcApp.Party("/comment", crs).Handle(new(controller.CommentController))
 
+	auth := oauth.New()
 	// Admin
-	adminMvc := mvcApp.Party("/admin", crs)
+	adminMvc := mvcApp.Party("/admin", crs, auth)
 
 	adminMvc.Party("/article").Handle(new(admin.ArticleController))
 
