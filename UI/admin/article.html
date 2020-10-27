@@ -15,27 +15,27 @@
     <script type="module" src="../js/admin/article.js"></script>
 </head>
 <body>
-<div class="container">
+<div class="container" id="article">
     <div class="row mt-3">
         <div class="col-sm-12 col-md-9 col-lg-9">
             <form>
                 <div class="form-group row">
                     <label class="col-1 col-form-label">标题</label>
                     <div class="col-11">
-                        <input type="text" class="form-control" required/>
+                        <input type="text" class="form-control" v-model="title" required/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-1 col-form-label">副标</label>
                     <div class="col-11">
-                        <input type="text" class="form-control"/>
+                        <input type="text" class="form-control" v-model="subTitle"/>
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-1 col-form-label">类型</label>
-                    <div class="col-11">
-                        <select class="form-control">
+                    <div class="col-11" >
+                        <select class="form-control" v-model="categoryId">
                             <option>文章类型</option>
                         </select>
                     </div>
@@ -44,7 +44,7 @@
                 <div class="form-group row">
                     <label class="col-1 col-form-label">简介</label>
                     <div class="col-11">
-                        <textarea class="form-control"></textarea>
+                        <textarea class="form-control" v-model="summary"></textarea>
                     </div>
                 </div>
 
@@ -56,7 +56,7 @@
                                 <i class="fas fa-eye text-muted"></i>
                             </a>
                         </div>
-                        <textarea class="form-control" rows="18" required></textarea>
+                        <textarea class="form-control" rows="18" v-model="content" required></textarea>
                     </div>
                 </div>
 
@@ -75,9 +75,10 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <button class="btn btn-outline-secondary" type="button">
+                        <label class="btn btn-outline-secondary">
                             <i class="fas fa-plus"></i>
-                        </button>
+                            <input type="file" class="d-none" @change="upload"/>
+                        </label>
                     </li>
                 </ul>
             </div>
