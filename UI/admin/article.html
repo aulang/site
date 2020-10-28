@@ -35,8 +35,9 @@
                 <div class="form-group row">
                     <label class="col-1 col-form-label">类型</label>
                     <div class="col-11" >
-                        <select class="form-control" v-model="categoryId">
-                            <option>文章类型</option>
+                        <select class="form-control" v-model="categoryId" required>
+                            <option v-for="category in categories"
+                                    :value="category.id" v-text="category.name"></option>
                         </select>
                     </div>
                 </div>
@@ -51,19 +52,30 @@
                 <div class="form-group row">
                     <label class="col-1 col-form-label">内容</label>
                     <div class="col-11">
-                        <div class="float-right">
-                            <a href="javascript:;" style="position: absolute; margin-left: -1.5rem">
-                                <i class="fas fa-eye text-muted"></i>
-                            </a>
+                        <nav>
+                            <div class="nav nav-tabs" role="tablist">
+                                <a class="nav-item nav-link" href="javascript:;" role="tab"
+                                   :class="{'active': isEdit}" @click="isEdit = !isEdit">编辑</a>
+                                <a class="nav-item nav-link" href="javascript:;" role="tab"
+                                   :class="{'active': !isEdit}" @click="isEdit = !isEdit; view()">预览</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content">
+                            <div class="tab-pane fade" role="tabpanel" :class="{'show active': isEdit}">
+                                <textarea class="form-control border-0 bg-light shadow-sm" rows="18"
+                                          v-model="source" required></textarea>
+                            </div>
+                            <div class="tab-pane fade" role="tabpanel" :class="{'show active': !isEdit}">
+                                <div class="bg-light shadow-sm h-100" v-html="content"></div>
+                            </div>
                         </div>
-                        <textarea class="form-control" rows="18" v-model="content" required></textarea>
                     </div>
                 </div>
 
                 <div class="form-group row float-right">
                     <div class="col-12">
                         <button class="btn btn-secondary mr-3" type="button">取消</button>
-                        <button class="btn btn-primary" type="button">保存</button>
+                        <button class="btn btn-primary" type="submit">保存</button>
                     </div>
                 </div>
             </form>
@@ -75,7 +87,11 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <label class="btn btn-outline-secondary">
+                        <a  v-for="resource in resources"
+                            :href="resource.id" v-text="resource.name"></a>
+                    </li>
+                    <li class="list-group-item">
+                        <label class="btn btn-outline-secondary mb-0">
                             <i class="fas fa-plus"></i>
                             <input type="file" class="d-none" @change="upload"/>
                         </label>

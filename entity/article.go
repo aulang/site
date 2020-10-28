@@ -12,7 +12,8 @@ type Article struct {
 	Title         string             `json:"title" bson:"title"`                   // 标题
 	SubTitle      string             `json:"subTitle" bson:"subTitle"`             // 副标题
 	Summary       string             `json:"summary" bson:"summary"`               // 总结
-	Content       string             `json:"content" bson:"content"`               // 内容
+	Content       string             `json:"content" bson:"content"`               // html
+	Source        string             `json:"source" bson:"source"`                 // 原内容
 	Renew         time.Time          `json:"renew" bson:"renew"`                   // 更新时间
 	CategoryID    string             `json:"categoryId" bson:"categoryId"`         // 类别ID
 	CategoryName  string             `json:"categoryName" bson:"categoryName"`     // 类别名

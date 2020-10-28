@@ -14,6 +14,187 @@
     <script type="module" src="../js/admin/index.js"></script>
 </head>
 <body>
+<div class="container mt-3" id="index">
+    <nav>
+        <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link" href="javascript:;" role="tab"
+               :class="{'active': isWebsite}" @click="isWebsite = !isWebsite">网站信息</a>
+            <a class="nav-item nav-link" href="javascript:;" role="tab"
+               :class="{'active': !isWebsite}" @click="isWebsite = !isWebsite">文章管理</a>
+        </div>
+    </nav>
+    <div class="tab-content">
+        <div class="tab-pane fade" role="tabpanel" :class="{'show active': isWebsite}">
+            <form class="bg-light shadow-sm mt-3">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>标题</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>描述</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>搜索关键字</label>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
 
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>作者</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>头像</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>网站</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>邮件</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>微信</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>微信二维码</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>GitHub</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>开始年份</label>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>菜单</label>
+                    <table class="table table-bordered">
+                        <thead class="bg-info">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">名称</th>
+                            <th scope="col">链接</th>
+                            <th scope="col">描述</th>
+                            <th scope="col">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>百度</td>
+                            <td>https://www.baidu.com</td>
+                            <td>百度以下，你就知道</td>
+                            <td>
+                                <a href="javascript:;">上移</a>
+                                <a href="javascript:;">上移</a>
+                                <a href="javascript:;">修改</a>
+                                <a href="javascript:;">删除</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group">
+                    <label>友情连接</label>
+                    <table class="table table-bordered">
+                        <thead class="bg-info">
+                        <tr>
+                            <th scope="col">名称</th>
+                            <th scope="col">链接</th>
+                            <th scope="col">描述</th>
+                            <th scope="col">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>百度</td>
+                            <td>https://www.baidu.com</td>
+                            <td>百度以下，你就知道</td>
+                            <td>
+                                <a href="javascript:;">修改</a>
+                                <a href="javascript:;">删除</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade" role="tabpanel" :class="{'show active': !isWebsite}">
+            <div class="bg-light shadow-sm mt-3">
+                <div class="row">
+                    <div class="col-8">
+                        <h4>文章列表</h4>
+                    </div>
+
+                    <div class="col-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">标题</th>
+                        <th scope="col">副标题</th>
+                        <th scope="col">类别</th>
+                        <th scope="col">创建时间</th>
+                        <th scope="col">修改时间</th>
+                        <th scope="col">评论数</th>
+                        <th scope="col">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>6</td>
+                        <td>7</td>
+                        <td>8</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">上一页</a>
+                        </li>
+
+                        <li class="page-item">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">下一页</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
