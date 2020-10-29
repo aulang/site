@@ -81,7 +81,7 @@
                 <div class="form-group">
                     <div>
                         <label>菜单</label>
-                        <a href="javascript:;" title="新增">
+                        <a href="javascript:;" title="新增" @click="addMenu">
                             <i class="fas fa-plus"></i>
                         </a>
                     </div>
@@ -97,7 +97,7 @@
                         </thead>
                         <tbody>
                         <tr v-for="menu in menus">
-                            <td v-text="menu.title"></td>
+                            <td v-text="menu.name"></td>
                             <td v-text="menu.url"></td>
                             <td v-text="menu.desc"></td>
                             <td v-text="menu.order"></td>
@@ -117,7 +117,7 @@
                 <div class="form-group">
                     <div>
                         <label>友情链接</label>
-                        <a href="javascript:;" title="新增">
+                        <a href="javascript:;" title="新增" @click="addLink">
                             <i class="fas fa-plus"></i>
                         </a>
                     </div>
@@ -160,7 +160,7 @@
                     <div class="col-8">
                         <h5>
                             <span>文章列表</span>
-                            <a href="javascript:;" title="新增">
+                            <a href="javascript:;" title="新增" @click="newArticle">
                                 <i class="fas fa-plus"></i>
                             </a>
                         </h5>
