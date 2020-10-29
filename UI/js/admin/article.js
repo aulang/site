@@ -1,4 +1,5 @@
 import {storage} from "../public/storage.js";
+import {urlParam} from "../public/url.js";
 import {apiUrl} from "../public/base.js";
 
 let article = new Vue({
@@ -50,4 +51,33 @@ function initCategory() {
         });
 }
 
+function getArticle(id) {
+    axios.get(apiUrl + 'articles/' + id)
+        .then(function (response) {
+            let code = response.data.code;
+            if (code !== 0) {
+                alert(response.data.msg);
+                return;
+            }
+
+            article.title = response.data.data.title;
+            article.subTitle = response.data.data.subTitle;
+            article.categoryId = response.data.data.categoryId;
+            article.summary = response.data.data.summary;
+            article.source = response.data.data.source;
+
+            if (!response.data.data.source && response.data.data.content) {
+                article.source = response.data.data.content;
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
 initCategory();
+
+let id = urlParam('id');
+if (id) {
+    getArticle(id);
+}

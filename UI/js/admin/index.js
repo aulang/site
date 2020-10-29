@@ -47,7 +47,10 @@ let index = new Vue({
             alert('添加友情链接！');
         },
         newArticle: function () {
-            alert('新文章！');
+            window.open('./article.html', '_blank');
+        },
+        editArticle: function (id) {
+            window.open(`./article.html?id=${id}`, '_blank');
         }
     }
 });

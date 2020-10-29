@@ -200,7 +200,7 @@
                         <td v-text="article.renew"></td>
                         <td v-text="article.commentsCount"></td>
                         <td>
-                            <a href="javascript:;">
+                            <a href="javascript:;" @click="editArticle(article.id)">
                                 <i class="fas fa-edit" style="font-size: 25px;"></i>
                             </a>
                             <a href="javascript:;">
