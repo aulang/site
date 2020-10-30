@@ -41,16 +41,48 @@ let index = new Vue({
     },
     methods: {
         addMenu: function () {
-            alert('添加菜单！');
+            let data = {
+                id: '',
+                name: '',
+                url: '',
+                desc: '',
+                order: '',
+                edit: true,
+            };
+            this.menus.push(data);
+        },
+        editMenu: function (index, edit) {
+            let data = this.menus[index];
+            data.edit = edit;
+            this.menus.splice(index, 1, data);
+        },
+        delMenu: function (index) {
+            this.menus.splice(index, 1);
         },
         addLink: function () {
-            alert('添加友情链接！');
+            let data = {
+                title: '',
+                url: '',
+                desc: '',
+                edit: true
+            };
+            this.config.links.push(data);
+        },
+        editLink: function (index, edit) {
+            let data = this.config.links[index];
+            data.edit = edit;
+            this.config.links.splice(index, 1, data);
+        },
+        delLink: function (index) {
+            this.config.links.splice(index, 1);
         },
         newArticle: function () {
             window.open('./article.html', '_blank');
         },
         editArticle: function (id) {
             window.open(`./article.html?id=${id}`, '_blank');
+        },
+        delArticle: function (id) {
         }
     }
 });
