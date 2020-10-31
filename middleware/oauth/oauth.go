@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"github.com/kataras/iris/v12"
 	"io/ioutil"
@@ -38,7 +39,7 @@ func (o *OAuth) Serve(ctx iris.Context) {
 
 	user, err := o.obtainUser(accessToken)
 	if err != nil {
-		log.Println("获取User失败，access_token：", accessToken)
+		log.Println("获取User失败：", err)
 		ctx.StopWithStatus(http.StatusUnauthorized)
 	}
 
@@ -53,7 +54,7 @@ func (o *OAuth) getAccessToken(ctx iris.Context) string {
 
 	authorization := ctx.GetHeader(Authorization)
 
-	log.Println("header Authorization：", accessToken)
+	log.Println("header Authorization：", authorization)
 
 	if authorization != "" {
 		accessToken = strings.Replace(authorization, Bearer, "", 1)
@@ -63,7 +64,11 @@ func (o *OAuth) getAccessToken(ctx iris.Context) string {
 }
 
 func (o *OAuth) obtainUser(accessToken string) (user *SimpleUser, err error) {
-	client := http.Client{}
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	client := http.Client{Transport: transport}
 
 	req, err := http.NewRequest("GET", o.profileUrl, nil)
 	if err != nil {
