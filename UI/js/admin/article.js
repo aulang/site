@@ -74,8 +74,7 @@ function getArticle(id) {
         });
 }
 
-loginHandle();
-initCategory();
+loginHandle(initCategory);
 
 let id = urlParam('id');
 if (id) {

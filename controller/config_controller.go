@@ -19,5 +19,5 @@ func (c *WebConfigController) Get() Response {
 		log.Printf("查询配置失败，%v", err)
 	}
 
-	return SuccessWithData(config)
+	return SuccessWithData(config.Sort())
 }

@@ -40,11 +40,11 @@ let author = new Vue({
         avatarTmp: null
     },
     methods: {
-        showQRCode: function() {
+        showQRCode: function () {
             this.avatarTmp = this.avatar;
             this.avatar = this.wechatQRCode;
         },
-        hideQRCode: function() {
+        hideQRCode: function () {
             if (this.avatarTmp) {
                 this.avatar = this.avatarTmp;
             }
@@ -97,6 +97,7 @@ let beiAn = new Vue({
 
 function setConfig(config) {
     header.title = config.title;
+    header.menus = config.menus;
 
     author.avatar = config.avatar;
     author.author = config.author;
@@ -130,42 +131,6 @@ function getConfig() {
 
             config = storage.save('config', response.data.data);
             setConfig(config);
-        })
-        .catch(function (error) {
-            console.log(error.data);
-        });
-}
-
-function initMenus() {
-    let menus = storage.load('menus');
-    if (menus) {
-        header.menus = menus;
-        return;
-    }
-
-    axios.get(apiUrl + 'menus')
-        .then(function (response) {
-            let code = response.data.code;
-            if (code !== 0) {
-                alert(response.data.msg);
-                return;
-            }
-
-            if (!response.data.data) {
-                return;
-            }
-
-            menus = response.data.data.map(menu => {
-                let target = menu.url.toLowerCase().startsWith('http') ? '_blank' : '_self';
-                return {
-                    name: menu.name,
-                    url: menu.url,
-                    desc: menu.desc,
-                    target: target
-                }
-            });
-
-            header.menus = storage.save('menus', menus);
         })
         .catch(function (error) {
             console.log(error.data);
@@ -263,7 +228,6 @@ function hitokoto() {
 
 hitokoto();
 getConfig();
-initMenus();
 initBeiAn();
 initCategory();
 initTop3Articles();

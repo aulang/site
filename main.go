@@ -16,7 +16,7 @@ func main() {
 	app := iris.New()
 
 	app.Use(recover.New())
-	app.Logger().SetLevel("warn")
+	app.Logger().SetLevel("debug")
 
 	initMVC(mvc.New(app))
 
@@ -31,14 +31,11 @@ func initMVC(mvcApp *mvc.Application) {
 	mvcApp.Register(service.NewCategoryService())
 	mvcApp.Register(service.NewArticleService())
 	mvcApp.Register(service.NewCommentService())
-	mvcApp.Register(service.NewMenuService())
 
 	// ROOT
 	mvcApp.Handle(new(controller.IndexController))
 	// 配置
 	mvcApp.Party("/config").Handle(new(controller.WebConfigController))
-	// 菜单
-	mvcApp.Party("/menus").Handle(new(controller.MenuController))
 	// 类别
 	mvcApp.Party("/categories").Handle(new(controller.CategoryController))
 	// 文章

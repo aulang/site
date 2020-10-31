@@ -3,6 +3,7 @@ let index = new Vue({
     data: {
         isWebsite: true,
         config: {
+            id: '',
             title: '',
             desc: '',
             keywords: '',
@@ -14,28 +15,10 @@ let index = new Vue({
             wechatQRCode: '',
             avatar: '',
             since: '',
-            links: [{
-                title: '',
-                url: '',
-                desc: ''
-            }]
+            menus: [],
+            links: []
         },
-        menus: [{
-            id: '',
-            name: '',
-            url: '',
-            desc: '',
-            order: 1
-        }],
-        articles: [{
-            id: '',
-            title: '',
-            subTitle: '',
-            categoryName: '',
-            creationDate: '',
-            renew: '',
-            commentsCount: 0
-        }],
+        articles: [],
         page: 1,
         pageSize: 20,
         keyword: '',
@@ -43,13 +26,13 @@ let index = new Vue({
     },
     methods: {
         addMenu: function () {
+            let order = this.menus.length + 2;
             let data = {
-                id: '',
-                name: '',
+                title: '',
                 url: '',
                 desc: '',
-                order: '',
-                edit: true,
+                order: order,
+                edit: true
             };
             this.menus.push(data);
         },
@@ -59,13 +42,15 @@ let index = new Vue({
             this.menus.splice(index, 1, data);
         },
         delMenu: function (index) {
-            this.menus.splice(index, 1);
+            this.menus.links.splice(index, 1);
         },
         addLink: function () {
+            let order = this.links.length + 2;
             let data = {
                 title: '',
                 url: '',
                 desc: '',
+                order: order,
                 edit: true
             };
             this.config.links.push(data);
@@ -82,16 +67,14 @@ let index = new Vue({
             window.location.reload();
         },
         saveConfig: function () {
-            let menus = this.menus;
             let config = this.config;
-            axios.post('admin/config', {
-                config: config,
-                menus: menus
-            })
+            axios.post('admin/config', config)
                 .then(response => {
                     let code = response.data.code;
                     if (code !== 0) {
                         alert(response.data.msg);
+                    } else {
+                        alert('保存成功！')
                     }
                 })
                 .catch(error => {
@@ -114,7 +97,7 @@ let index = new Vue({
                     }
                 })
                 .catch(error => {
-                    console.log(error.data);
+                    console.log(error.data || '删除失败！');
                 })
         },
         searchArticle: function () {
@@ -138,26 +121,6 @@ function getConfig() {
             }
 
             index.config = response.data.data;
-        })
-        .catch(function (error) {
-            console.log(error.data);
-        });
-}
-
-function getMenus() {
-    axios.get('menus')
-        .then(function (response) {
-            let code = response.data.code;
-            if (code !== 0) {
-                alert(response.data.msg);
-                return;
-            }
-
-            if (!response.data.data) {
-                return;
-            }
-
-            index.menus = response.data.data;
         })
         .catch(function (error) {
             console.log(error.data);
@@ -189,8 +152,7 @@ function getArticles(page, size, keyword) {
         });
 }
 
-loginHandle();
-
-getMenus();
-getConfig();
-getArticles(1, 20, '');
+loginHandle(() => {
+    getConfig();
+    getArticles(1, 20, '');
+});

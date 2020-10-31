@@ -40,31 +40,31 @@ function getArticles(page, size) {
     size = size || 20;
 
     let url = 'articles/page?page=' + page + '&size=' + size;
-    if(keyword) {
-        url = url +  '&keyword=' + keyword;
+    if (keyword) {
+        url = url + '&keyword=' + keyword;
     }
     if (categoryId) {
-        url = url +  '&category=' + categoryId;
+        url = url + '&category=' + categoryId;
     }
 
     axios.get(apiUrl + url)
-            .then(function (response) {
-                let code = response.data.code;
-                if (code !== 0) {
-                    alert(response.data.msg);
-                    return;
-                }
+        .then(function (response) {
+            let code = response.data.code;
+            if (code !== 0) {
+                alert(response.data.msg);
+                return;
+            }
 
-                let page = response.data.data;
+            let page = response.data.data;
 
-                articles.page = page.pageNo;
-                articles.size = page.pageSize;
-                articles.articles = page.datas;
-                articles.totalPages = page.totalPages;
-            })
-            .catch(function (error) {
-                console.log(error.data);
-            });
+            articles.page = page.pageNo;
+            articles.size = page.pageSize;
+            articles.articles = page.datas;
+            articles.totalPages = page.totalPages;
+        })
+        .catch(function (error) {
+            console.log(error.data);
+        });
 }
 
 getArticles(0, 20);

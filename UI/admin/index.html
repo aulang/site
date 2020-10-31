@@ -97,12 +97,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="(menu, index) in menus">
+                        <tr v-for="(menu, index) in config.menus">
                             <template v-if="menu.edit">
-                                <td><input type="text" class="form-control" v-model="menu.name"/></td>
+                                <td><input type="text" class="form-control" v-model="menu.title"/></td>
                                 <td><input type="text" class="form-control" v-model="menu.url"/></td>
                                 <td><input type="text" class="form-control" v-model="menu.desc"/></td>
-                                <td><input type="text" class="form-control" v-model="menu.order"/></td>
+                                <td><input type="text" class="form-control" v-model.number="menu.order"/></td>
                                 <td>
                                     <a href="javascript:;" @click="editMenu(index, false)">
                                         <i class="fas fa-save" style="font-size: 25px;"></i>
@@ -113,7 +113,7 @@
                                 </td>
                             </template>
                             <template v-else>
-                                <td v-text="menu.name"></td>
+                                <td v-text="menu.title"></td>
                                 <td v-text="menu.url"></td>
                                 <td v-text="menu.desc"></td>
                                 <td v-text="menu.order"></td>
@@ -144,6 +144,7 @@
                             <th scope="col">名称</th>
                             <th scope="col">链接</th>
                             <th scope="col">描述</th>
+                            <th scope="col">排序</th>
                             <th scope="col">操作</th>
                         </tr>
                         </thead>
@@ -153,6 +154,7 @@
                                 <td><input type="text" class="form-control" v-model="link.title"/></td>
                                 <td><input type="text" class="form-control" v-model="link.url"/></td>
                                 <td><input type="text" class="form-control" v-model="link.desc"/></td>
+                                <td><input type="text" class="form-control" v-model.number="link.order"/></td>
                                 <td>
                                     <a href="javascript:;" @click="editLink(index, false)">
                                         <i class="fas fa-save" style="font-size: 25px;"></i>
@@ -166,6 +168,7 @@
                                 <td v-text="link.title"></td>
                                 <td v-text="link.url"></td>
                                 <td v-text="link.desc"></td>
+                                <td v-text="link.order"></td>
                                 <td>
                                     <a href="javascript:;" @click="editLink(index, true)">
                                         <i class="fas fa-edit" style="font-size: 25px;"></i>

@@ -1,4 +1,4 @@
-let baseUrl = 'https://aulang.cn/';
+let baseUrl = 'https://aulang.cn/site/';
 let clientId = '5f37d9f4c4155cda795f8fe5';
 let redirectUri = encodeURI('https://aulang.cn/admin/index.html');
 
