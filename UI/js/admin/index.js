@@ -1,5 +1,3 @@
-import {apiUrl} from "../public/base.js";
-
 let index = new Vue({
     el: '#index',
     data: {
@@ -86,7 +84,7 @@ let index = new Vue({
         saveConfig: function () {
             let menus = this.menus;
             let config = this.config;
-            axios.post(apiUrl + 'admin/config', {
+            axios.post('admin/config', {
                 config: config,
                 menus: menus
             })
@@ -107,7 +105,7 @@ let index = new Vue({
             window.open(`./article.html?id=${id}`, '_blank');
         },
         delArticle: function (id) {
-            let url = apiUrl + `/admin/article/${id}`;
+            let url = `/admin/article/${id}`;
             axios.delete(url)
                 .then(response => {
                     let code = response.data.code;
@@ -127,7 +125,7 @@ let index = new Vue({
 });
 
 function getConfig() {
-    axios.get(apiUrl + 'config')
+    axios.get('config')
         .then(function (response) {
             let code = response.data.code;
             if (code !== 0) {
@@ -147,7 +145,7 @@ function getConfig() {
 }
 
 function getMenus() {
-    axios.get(apiUrl + 'menus')
+    axios.get('menus')
         .then(function (response) {
             let code = response.data.code;
             if (code !== 0) {
@@ -167,7 +165,7 @@ function getMenus() {
 }
 
 function getArticles(page, size, keyword) {
-    let url = apiUrl + `admin/article/page?page=${page}&size=${size}&keyword=${keyword}`;
+    let url = `admin/article/page?page=${page}&size=${size}&keyword=${keyword}`;
     axios.get(url)
         .then(function (response) {
             let result = response.data;

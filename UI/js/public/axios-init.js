@@ -1,6 +1,6 @@
-let baseUrl = 'http://office.aulang.cn';
+let baseUrl = 'https://aulang.cn/';
 let clientId = '5f37d9f4c4155cda795f8fe5';
-let redirectUri = encodeURI('http://office.aulang.cn/index.html');
+let redirectUri = encodeURI('https://aulang.cn/admin/index.html');
 
 // 配置请求baseURL
 axios.defaults.baseURL = baseUrl;

@@ -1,6 +1,5 @@
 import {storage} from "../public/storage.js";
 import {urlParam} from "../public/url.js";
-import {apiUrl} from "../public/base.js";
 
 let article = new Vue({
     el: '#article',
@@ -34,7 +33,7 @@ function initCategory() {
         return;
     }
 
-    axios.get(apiUrl + 'categories')
+    axios.get('categories')
         .then(function (response) {
             let code = response.data.code;
             if (code !== 0) {
@@ -52,7 +51,7 @@ function initCategory() {
 }
 
 function getArticle(id) {
-    axios.get(apiUrl + 'articles/' + id)
+    axios.get('articles/' + id)
         .then(function (response) {
             let code = response.data.code;
             if (code !== 0) {

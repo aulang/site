@@ -38,6 +38,7 @@ func (o *OAuth) Serve(ctx iris.Context) {
 
 	user, err := o.obtainUser(accessToken)
 	if err != nil {
+		log.Println("获取User失败，access_token：", accessToken)
 		ctx.StopWithStatus(http.StatusUnauthorized)
 	}
 
@@ -48,7 +49,11 @@ func (o *OAuth) Serve(ctx iris.Context) {
 func (o *OAuth) getAccessToken(ctx iris.Context) string {
 	accessToken := ctx.URLParam(ACCESS_TOKEN)
 
+	log.Println("url access_token参数：", accessToken)
+
 	authorization := ctx.GetHeader(Authorization)
+
+	log.Println("header Authorization：", accessToken)
 
 	if authorization != "" {
 		accessToken = strings.Replace(authorization, Bearer, "", 1)
