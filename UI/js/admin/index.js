@@ -26,7 +26,7 @@ let index = new Vue({
     },
     methods: {
         addMenu: function () {
-            let order = this.menus.length + 2;
+            let order = this.config.menus.length + 1;
             let data = {
                 title: '',
                 url: '',
@@ -34,18 +34,18 @@ let index = new Vue({
                 order: order,
                 edit: true
             };
-            this.menus.push(data);
+            this.config.menus.push(data);
         },
         editMenu: function (index, edit) {
-            let data = this.menus[index];
+            let data = this.config.menus[index];
             data.edit = edit;
-            this.menus.splice(index, 1, data);
+            this.config.menus.splice(index, 1, data);
         },
         delMenu: function (index) {
-            this.menus.links.splice(index, 1);
+            this.config.menus.splice(index, 1);
         },
         addLink: function () {
-            let order = this.links.length + 2;
+            let order = this.config.links.length + 1;
             let data = {
                 title: '',
                 url: '',
@@ -87,24 +87,46 @@ let index = new Vue({
         editArticle: function (id) {
             window.open(`./article.html?id=${id}`, '_blank');
         },
-        delArticle: function (id) {
+        delArticle: function (id, title) {
+            let flag = confirm('确认删除【' + title + '】');
+            if (!flag) {
+                return;
+            }
+
+            let page = this.page;
+            let size = this.pageSize;
+            let keyword = this.keyword;
+
             let url = `/admin/article/${id}`;
             axios.delete(url)
                 .then(response => {
                     let code = response.data.code;
                     if (code !== 0) {
                         alert(response.data.msg);
+                    } else {
+                        getArticles(page, size, keyword);
                     }
                 })
                 .catch(error => {
                     console.log(error.data || '删除失败！');
-                })
+                });
         },
         searchArticle: function () {
             let keyword = this.keyword;
             getArticles(1, 20, keyword);
+        },
+        goPage: function (page) {
+            getArticles(page, this.pageSize, this.keyword);
         }
-    }
+    },
+    computed: {
+        noPrevious: function () {
+            return (this.page === 1);
+        },
+        noNext: function () {
+            return (this.totalPages === 0 || this.page === this.totalPages);
+        }
+    },
 });
 
 function getConfig() {

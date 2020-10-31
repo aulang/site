@@ -81,7 +81,7 @@
 
                 <div class="form-group">
                     <div>
-                        <label>菜单</label>
+                        <label>导航菜单</label>
                         <a href="javascript:;" title="新增" @click="addMenu">
                             <i class="fas fa-plus"></i>
                         </a>
@@ -238,7 +238,7 @@
                             <a href="javascript:;" @click="editArticle(article.id)">
                                 <i class="fas fa-edit" style="font-size: 25px;"></i>
                             </a>
-                            <a href="javascript:;" @clicl="delArticle(article.id)">
+                            <a href="javascript:;" @click="delArticle(article.id, article.title)">
                                 <i class="fas fa-trash-alt" style="font-size: 25px;"></i>
                             </a>
                         </td>
@@ -247,16 +247,16 @@
                 </table>
                 <nav>
                     <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#">上一页</a>
+                        <li class="page-item" :class="{disabled: noPrevious}">
+                            <a class="page-link" href="#" @click="goPage(page-1)">上一页</a>
                         </li>
 
-                        <li class="page-item">
-                            <a class="page-link" href="#">1</a>
+                        <li class="page-item" v-for="index in totalPages">
+                            <a class="page-link" href="#" @click="goPage(index - 1)" v-text="index"></a>
                         </li>
 
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#">下一页</a>
+                        <li class="page-item" :class="{disabled: noNext}">
+                            <a class="page-link" href="#" @click="goPage(page+1)">下一页</a>
                         </li>
                     </ul>
                 </nav>

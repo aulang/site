@@ -27,7 +27,22 @@ func (c *ArticleController) Post() Response {
 	if article.ID.IsZero() {
 		article.CreationDate, article.Renew = now, now
 	} else {
-		article.Renew = now
+		db, err := c.ArticleService.GetByID(article.ID.String())
+		if err != nil {
+			return FailWithError(err)
+		}
+
+		db.Renew = now
+
+		db.Title = article.Title
+		db.SubTitle = article.SubTitle
+		db.Summary = article.Summary
+		db.Content = article.Content
+		db.Source = article.Source
+		db.CategoryID = article.CategoryID
+		db.CategoryName = article.CategoryName
+
+		article = db
 	}
 
 	err := c.ArticleService.Save(&article)

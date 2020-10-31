@@ -49,12 +49,7 @@ func (o *OAuth) Serve(ctx iris.Context) {
 
 func (o *OAuth) getAccessToken(ctx iris.Context) string {
 	accessToken := ctx.URLParam(ACCESS_TOKEN)
-
-	log.Println("url access_token参数：", accessToken)
-
 	authorization := ctx.GetHeader(Authorization)
-
-	log.Println("header Authorization：", authorization)
 
 	if authorization != "" {
 		accessToken = strings.Replace(authorization, Bearer, "", 1)
@@ -91,7 +86,7 @@ func (o *OAuth) obtainUser(accessToken string) (user *SimpleUser, err error) {
 
 	err = json.Unmarshal(body, &user)
 	if err != nil {
-		log.Println("获取User失败", string(body))
+		log.Println("Profile接口调用失败！", string(body))
 		return user, err
 	}
 
