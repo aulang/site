@@ -63,7 +63,7 @@ function getArticles(page, size) {
                 articles.totalPages = page.totalPages;
             })
             .catch(function (error) {
-                console.log(error);
+                console.log(error.data);
             });
 }
 

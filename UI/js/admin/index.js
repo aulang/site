@@ -27,7 +27,7 @@ let index = new Vue({
             name: '',
             url: '',
             desc: '',
-            order: ''
+            order: 1
         }],
         articles: [{
             id: '',
@@ -37,7 +37,11 @@ let index = new Vue({
             creationDate: '',
             renew: '',
             commentsCount: 0
-        }]
+        }],
+        page: 1,
+        pageSize: 20,
+        keyword: '',
+        totalPages: 0
     },
     methods: {
         addMenu: function () {
@@ -76,6 +80,26 @@ let index = new Vue({
         delLink: function (index) {
             this.config.links.splice(index, 1);
         },
+        cancel: function () {
+            window.location.reload();
+        },
+        saveConfig: function () {
+            let menus = this.menus;
+            let config = this.config;
+            axios.post(apiUrl + 'admin/config', {
+                config: config,
+                menus: menus
+            })
+                .then(response => {
+                    let code = response.data.code;
+                    if (code !== 0) {
+                        alert(response.data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.log(error.data);
+                });
+        },
         newArticle: function () {
             window.open('./article.html', '_blank');
         },
@@ -83,6 +107,10 @@ let index = new Vue({
             window.open(`./article.html?id=${id}`, '_blank');
         },
         delArticle: function (id) {
+        },
+        searchArticle: function () {
+            let keyword = this.keyword;
+            getArticles(1, 20, keyword);
         }
     }
 });
@@ -103,7 +131,7 @@ function getConfig() {
             index.config = response.data.data;
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
@@ -123,31 +151,35 @@ function getMenus() {
             index.menus = response.data.data;
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
 function getArticles(page, size, keyword) {
-    let url = apiUrl + `articles/page?page=${page}&size=${size}&keyword=${keyword}`;
+    let url = apiUrl + `admin/article/page?page=${page}&size=${size}&keyword=${keyword}`;
     axios.get(url)
         .then(function (response) {
-            let code = response.data.code;
+            let result = response.data;
+            let code = result.code;
             if (code !== 0) {
-                alert(response.data.msg);
+                alert(result.msg);
                 return;
             }
 
-            if (!response.data.data.datas) {
+            if (!result.data.datas) {
                 return;
             }
 
-            index.articles = response.data.data.datas;
+            index.articles = result.data.datas;
+            index.page = result.data.pageNo;
+            index.pageSize = result.data.pageSize;
+            index.totalPages = result.data.totalPages;
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
 getMenus();
 getConfig();
-getArticles(1, 10, '');
+getArticles(1, 20, '');

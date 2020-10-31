@@ -47,7 +47,7 @@ function initCategory() {
             }
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
@@ -71,7 +71,7 @@ function getArticle(id) {
             }
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 

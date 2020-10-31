@@ -23,7 +23,7 @@ type menuService struct {
 }
 
 func (s *menuService) getMaxOrder() int {
-	var order int = 1
+	var order = 1
 
 	ops := options.FindOne().SetSort(bson.D{{Key: "order", Value: -1}})
 	result := s.c.FindOne(s.ctx, bson.D{}, ops)

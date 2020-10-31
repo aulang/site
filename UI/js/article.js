@@ -51,7 +51,7 @@ function getArticle(id) {
             article.article = response.data.data;
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 

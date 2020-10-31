@@ -15,13 +15,14 @@ type OAuth struct {
 
 const (
 	Bearer        = "Bearer "
+	ACCESS_TOKEN  = "access_token"
 	Authorization = "Authorization"
 )
 
 func New() iris.Handler {
-	return OAuth{
+	return (&OAuth{
 		profileUrl: "https://aulang.cn/oauth/api/profile",
-	}.Serve
+	}).Serve
 }
 
 func (o *OAuth) Serve(ctx iris.Context) {
@@ -41,10 +42,11 @@ func (o *OAuth) Serve(ctx iris.Context) {
 	}
 
 	ctx.SetUser(user)
+	ctx.Next()
 }
 
 func (o *OAuth) getAccessToken(ctx iris.Context) string {
-	accessToken := ctx.URLParam("token")
+	accessToken := ctx.URLParam(ACCESS_TOKEN)
 
 	authorization := ctx.GetHeader(Authorization)
 
@@ -82,6 +84,8 @@ func (o *OAuth) obtainUser(accessToken string) (user *SimpleUser, err error) {
 		log.Println("获取User失败", string(body))
 		return user, err
 	}
+
+	user.AccessToken = accessToken
 
 	return user, err
 }

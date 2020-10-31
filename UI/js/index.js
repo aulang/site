@@ -44,7 +44,7 @@ let article = new Vue({
                     that.preArticle = data[0];
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    console.log(error.data);
                 });
         },
         goNext: function () {
@@ -84,7 +84,7 @@ let article = new Vue({
                     that.nextArticle = data[0];
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    console.log(error.data);
                 });
         }
     },
@@ -144,7 +144,7 @@ function initArticle() {
             }
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 

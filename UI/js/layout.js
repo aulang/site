@@ -132,7 +132,7 @@ function getConfig() {
             setConfig(config);
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
@@ -168,7 +168,7 @@ function initMenus() {
             header.menus = storage.save('menus', menus);
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
@@ -192,7 +192,7 @@ function initCategory() {
             }
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
@@ -211,7 +211,7 @@ function initBeiAn() {
             beiAn.mps = bei_an.mps;
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
@@ -229,7 +229,7 @@ function initTop3Articles() {
             }
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
@@ -247,7 +247,7 @@ function initTop3Comments() {
             }
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
@@ -257,7 +257,7 @@ function hitokoto() {
             author.hitokoto = response.data;
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error.data);
         });
 }
 
