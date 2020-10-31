@@ -7,7 +7,7 @@ axios.defaults.baseURL = baseUrl;
 // 允许跨域
 axios.defaults.crossDomain = true;
 // 允许跨域携带Cookie
-axios.defaults.withCredentials = false;
+axios.defaults.withCredentials = true;
 // 设置请求头为 Authorization
 axios.defaults.headers.common['Authorization'] = '';
 
@@ -93,6 +93,8 @@ function random(length) {
 }
 
 function loginHandle(loginFunc) {
+    loginFunc = loginFunc || (() => void (0));
+
     let token = ttlLocalStorage.getItem('access_token');
     if (token) {
         // 已登录

@@ -191,6 +191,8 @@ function getArticles(page, size, keyword) {
         });
 }
 
+loginHandle();
+
 getMenus();
 getConfig();
 getArticles(1, 20, '');
