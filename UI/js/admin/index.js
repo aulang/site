@@ -107,6 +107,17 @@ let index = new Vue({
             window.open(`./article.html?id=${id}`, '_blank');
         },
         delArticle: function (id) {
+            let url = apiUrl + `/admin/article/${id}`;
+            axios.delete(url)
+                .then(response => {
+                    let code = response.data.code;
+                    if (code !== 0) {
+                        alert(response.data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.log(error.data);
+                })
         },
         searchArticle: function () {
             let keyword = this.keyword;
