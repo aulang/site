@@ -50,7 +50,11 @@ let article = new Vue({
             });
         },
         cancel: function () {
-            window.location.reload();
+            if (this.id) {
+                getArticle(this.id);
+            } else {
+                window.location.reload();
+            }
         }
     }
 });
