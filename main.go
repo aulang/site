@@ -22,7 +22,7 @@ func main() {
 	sess := sessions.New(sessions.Config{Cookie: "SessionID", AllowReclaim: true, Expires: -1})
 	app.Use(sess.Handler())
 
-	app.Logger().SetLevel("debug")
+	app.Logger().SetLevel("warn")
 
 	initMVC(mvc.New(app))
 
