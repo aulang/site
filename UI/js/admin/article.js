@@ -9,15 +9,7 @@ let article = new Vue({
         summary: '',
         source: '',
 
-        resources: [{
-            id: 'id1',
-            filename: 'filename1',
-            url: 'url1'
-        }, {
-            id: 'id2',
-            filename: 'filename2',
-            url: 'url3'
-        }],
+        resources: [],
         categories: [],
         isEdit: true,
         content: ''
@@ -156,6 +148,10 @@ function getResource(id) {
             let code = response.data.code;
             if (code !== 0) {
                 alert(response.data.msg);
+                return;
+            }
+
+            if (!response.data.data) {
                 return;
             }
 

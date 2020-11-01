@@ -29,7 +29,7 @@ func (c *ResourceController) GetSubjectBy(subjectId string) Response {
 }
 
 // POST /admin/resource/subject/{subjectId}
-func (c *ResourceController) PostBy(subjectId string) Response {
+func (c *ResourceController) PostSubjectBy(subjectId string) Response {
 	user := c.Ctx.User().(*oauth.SimpleUser)
 
 	file, header, err := c.Ctx.FormFile("file")
