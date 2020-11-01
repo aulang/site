@@ -36,6 +36,7 @@ func (o *OAuth) Serve(ctx iris.Context) {
 
 	user := o.getSessionUser(ctx)
 	if user != nil && user.GetAuthorization() == accessToken {
+		ctx.SetUser(user)
 		ctx.Next()
 		return
 	}
