@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/aulang/site/config"
-	. "github.com/aulang/site/model"
 	"github.com/aulang/site/service"
 	"github.com/kataras/iris/v12"
 	"net/http"
