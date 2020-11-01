@@ -218,27 +218,27 @@ func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) 
 
 var _ ArticleService = (*articleService)(nil)
 
-var article = repository.Collection("article")
+var articleCollection = repository.Collection("article")
 
 func NewArticleService() ArticleService {
-	return &articleService{c: article, ctx: ctx}
+	return &articleService{c: articleCollection, ctx: ctx}
 }
 
 func init() {
 	indexes := [...]mongo.IndexModel{
 		{
 			Keys:    bson.M{"renew": -1},
-			Options: options.Index().SetName("ik_article_renew").SetBackground(true),
+			Options: options.Index().SetName("ik_article_renew"),
 		},
 		{
 			Keys:    bson.M{"creationDate": -1},
-			Options: options.Index().SetName("ik_article_creationDate").SetBackground(true),
+			Options: options.Index().SetName("ik_article_creationDate"),
 		},
 		{
 			Keys:    bson.M{"categoryId": -1},
-			Options: options.Index().SetName("ik_article_categoryId").SetBackground(true),
+			Options: options.Index().SetName("ik_article_categoryId"),
 		},
 	}
 
-	article.Indexes().CreateMany(ctx, indexes[:])
+	articleCollection.Indexes().CreateMany(ctx, indexes[:])
 }

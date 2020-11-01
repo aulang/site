@@ -83,8 +83,10 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <a v-for="resource in resources"
-                           :href="resource.id" v-text="resource.name"></a>
+                        <div v-for="(resource, index) in resources">
+                            <a :href="resource.url" v-text="resource.filename"></a>
+                            <a href="javascript:;" class="text-danger" @click="delResource(index, resource.id)"><span>&times;</span></a>
+                        </div>
                     </li>
                     <li class="list-group-item">
                         <label class="btn btn-outline-secondary mb-0">

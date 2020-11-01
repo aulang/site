@@ -27,7 +27,7 @@ func (c *ArticleController) Post() Response {
 	if article.ID.IsZero() {
 		article.CreationDate, article.Renew = now, now
 	} else {
-		db, err := c.ArticleService.GetByID(article.ID.String())
+		db, err := c.ArticleService.GetByID(article.ID.Hex())
 		if err != nil {
 			return FailWithError(err)
 		}

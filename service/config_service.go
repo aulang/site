@@ -65,8 +65,8 @@ func (s *webConfigService) Save(config *WebConfig) error {
 
 var _ WebConfigService = (*webConfigService)(nil)
 
-var webConfig = repository.Collection("webConfig")
+var webConfigCollection = repository.Collection("webConfig")
 
 func NewWebConfigService() WebConfigService {
-	return &webConfigService{c: webConfig, ctx: ctx}
+	return &webConfigService{c: webConfigCollection, ctx: ctx}
 }

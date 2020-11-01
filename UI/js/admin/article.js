@@ -1,5 +1,4 @@
 import {storage} from "../public/storage.js";
-import {urlParam} from "../public/url.js";
 
 let article = new Vue({
     el: '#article',
@@ -10,14 +9,58 @@ let article = new Vue({
         summary: '',
         source: '',
 
-        resources: [],
+        resources: [{
+            id: 'id1',
+            filename: 'filename1',
+            url: 'url1'
+        }, {
+            id: 'id2',
+            filename: 'filename2',
+            url: 'url3'
+        }],
         categories: [],
         isEdit: true,
         content: ''
     },
     methods: {
-        upload: function () {
-            alert('上传资源');
+        upload: function (e) {
+            let thiz = this;
+            let id = thiz.id;
+            if (!id) {
+                alert('请先保存文章，然后再上传资源!');
+                return;
+            }
+
+            let config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime()
+                }
+            }
+            let formData = new FormData();
+            formData.append('file', e.target.files[0]);
+
+            axios.post('admin/resource/subject/' + id, formData, config)
+                .then(response => {
+                    this.resources.push(toResource(response.data.data))
+                })
+                .catch(error => {
+                    alert(error.data || '上传资源失败');
+                });
+        },
+        delResource: function (index, id) {
+            let thiz = this;
+            axios.delete('admin/resource/' + id)
+                .then(response => {
+                    let code = response.data.code;
+                    if (code !== 0) {
+                        alert(response.data.msg);
+                    } else {
+                        thiz.resources.splice(index, 1);
+                    }
+                })
+                .catch(error => {
+                    console.log(error.data || '删除失败！');
+                });
         },
         view: function () {
             // markdown转html
@@ -107,10 +150,39 @@ function getArticle(id) {
         });
 }
 
+function getResource(id) {
+    axios.get('admin/resource/subject/' + id)
+        .then(response => {
+            let code = response.data.code;
+            if (code !== 0) {
+                alert(response.data.msg);
+                return;
+            }
+
+            let token = ttlLocalStorage.getItem('access_token');
+            article.resources = response.data.data.map(e => toResource(e, token));
+        }).catch(error => {
+        alert(error.data || '获取资源失败!');
+    });
+}
+
 function getCategoryName() {
     let category = document.getElementById("category");
     let index = category.selectedIndex;
     return category.options[index].text;
+}
+
+function toResource(result, token) {
+    let id = result.id
+    let filename = result.filename;
+    token = token || ttlLocalStorage.getItem('access_token');
+
+    let url = `${baseUrl}resource/${id}?access_token=${token}`;
+    return {
+        id: id,
+        filename: filename,
+        url: url
+    }
 }
 
 loginHandle(initCategory);
@@ -118,4 +190,5 @@ loginHandle(initCategory);
 let id = urlParam('id');
 if (id) {
     getArticle(id);
+    getResource(id);
 }

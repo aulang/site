@@ -10,3 +10,9 @@ iris:
 mongodb:
   uri: mongodb://127.0.0.1:27017
   database: site
+
+minio:
+  endpoint: aulang.cn:9000
+  accessKey: lsT6BZoh2gWPKUmH
+  secretKey: A7Ak1TGQSytK5WmGSRF3VWQFYHYEVVZG
+  useSSL: false
