@@ -26,7 +26,7 @@ let index = new Vue({
     },
     methods: {
         addMenu: function () {
-            let order = this.config.menus.length + 1;
+            let order = this.config.menus.length;
             let data = {
                 title: '',
                 url: '',
@@ -45,7 +45,7 @@ let index = new Vue({
             this.config.menus.splice(index, 1);
         },
         addLink: function () {
-            let order = this.config.links.length + 1;
+            let order = this.config.links.length;
             let data = {
                 title: '',
                 url: '',
