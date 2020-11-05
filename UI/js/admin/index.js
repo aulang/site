@@ -177,8 +177,10 @@ function getArticles(page, size, keyword) {
                 return;
             }
 
-            if (!result.data.datas) {
-                return;
+            if (result.data.datas) {
+                index.articles = result.data.datas;
+            } else {
+                index.articles = [];
             }
 
             index.articles = result.data.datas;
