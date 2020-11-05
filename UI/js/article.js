@@ -1,5 +1,5 @@
-import { apiUrl } from './public/base.js';
-import { urlParam } from "./public/url.js";
+import {apiUrl} from './public/base.js';
+import {urlParam} from "./public/url.js";
 
 let articleId = urlParam('id');
 
@@ -10,8 +10,7 @@ if (!articleId) {
 let article = new Vue({
     el: '#article',
     data: {
-        article: {
-        },
+        article: {},
         comment: {
             "name": "",
             "mail": "",

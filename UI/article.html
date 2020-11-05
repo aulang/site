@@ -24,7 +24,7 @@
                 </a>
 
                 <a class="nav-link text-muted"
-                   v-for="menu in menus" :href="menu.url" :title="menu.desc" :target="menu.target" v-text="menu.name">
+                   v-for="menu in menus" :href="menu.url" :title="menu.desc" :target="menu.target" v-text="menu.title">
                 </a>
             </div>
         </div>
@@ -71,7 +71,8 @@
                 </div>
 
                 <div class="row">
-                    <p>已有<span v-text="article.commentsCount"></span>条评论</p>
+                    <p v-if="article.commentsCount > 0">已有<span v-text="article.commentsCount"></span>条评论</p>
+                    <p v-else>暂无评论</p>
 
                     <div class="container">
                         <div class="row" v-for="comment in article.comments">

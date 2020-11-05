@@ -1,10 +1,9 @@
-import {apiUrl} from "../public/base.js";
-
 let index = new Vue({
     el: '#index',
     data: {
         isWebsite: true,
         config: {
+            id: '',
             title: '',
             desc: '',
             keywords: '',
@@ -16,28 +15,10 @@ let index = new Vue({
             wechatQRCode: '',
             avatar: '',
             since: '',
-            links: [{
-                title: '',
-                url: '',
-                desc: ''
-            }]
+            menus: [],
+            links: []
         },
-        menus: [{
-            id: '',
-            name: '',
-            url: '',
-            desc: '',
-            order: 1
-        }],
-        articles: [{
-            id: '',
-            title: '',
-            subTitle: '',
-            categoryName: '',
-            creationDate: '',
-            renew: '',
-            commentsCount: 0
-        }],
+        articles: [],
         page: 1,
         pageSize: 20,
         keyword: '',
@@ -45,29 +26,31 @@ let index = new Vue({
     },
     methods: {
         addMenu: function () {
-            let data = {
-                id: '',
-                name: '',
-                url: '',
-                desc: '',
-                order: '',
-                edit: true,
-            };
-            this.menus.push(data);
-        },
-        editMenu: function (index, edit) {
-            let data = this.menus[index];
-            data.edit = edit;
-            this.menus.splice(index, 1, data);
-        },
-        delMenu: function (index) {
-            this.menus.splice(index, 1);
-        },
-        addLink: function () {
+            let order = this.config.menus.length;
             let data = {
                 title: '',
                 url: '',
                 desc: '',
+                order: order,
+                edit: true
+            };
+            this.config.menus.push(data);
+        },
+        editMenu: function (index, edit) {
+            let data = this.config.menus[index];
+            data.edit = edit;
+            this.config.menus.splice(index, 1, data);
+        },
+        delMenu: function (index) {
+            this.config.menus.splice(index, 1);
+        },
+        addLink: function () {
+            let order = this.config.links.length;
+            let data = {
+                title: '',
+                url: '',
+                desc: '',
+                order: order,
                 edit: true
             };
             this.config.links.push(data);
@@ -84,16 +67,14 @@ let index = new Vue({
             window.location.reload();
         },
         saveConfig: function () {
-            let menus = this.menus;
             let config = this.config;
-            axios.post(apiUrl + 'admin/config', {
-                config: config,
-                menus: menus
-            })
+            axios.post('admin/config', config)
                 .then(response => {
                     let code = response.data.code;
                     if (code !== 0) {
                         alert(response.data.msg);
+                    } else {
+                        alert('保存成功！')
                     }
                 })
                 .catch(error => {
@@ -106,28 +87,50 @@ let index = new Vue({
         editArticle: function (id) {
             window.open(`./article.html?id=${id}`, '_blank');
         },
-        delArticle: function (id) {
-            let url = apiUrl + `/admin/article/${id}`;
+        delArticle: function (id, title) {
+            let flag = confirm('确认删除【' + title + '】');
+            if (!flag) {
+                return;
+            }
+
+            let page = this.page;
+            let size = this.pageSize;
+            let keyword = this.keyword;
+
+            let url = `/admin/article/${id}`;
             axios.delete(url)
                 .then(response => {
                     let code = response.data.code;
                     if (code !== 0) {
                         alert(response.data.msg);
+                    } else {
+                        getArticles(page, size, keyword);
                     }
                 })
                 .catch(error => {
-                    console.log(error.data);
-                })
+                    console.log(error.data || '删除失败！');
+                });
         },
         searchArticle: function () {
             let keyword = this.keyword;
             getArticles(1, 20, keyword);
+        },
+        goPage: function (page) {
+            getArticles(page, this.pageSize, this.keyword);
         }
-    }
+    },
+    computed: {
+        noPrevious: function () {
+            return (this.page === 1);
+        },
+        noNext: function () {
+            return (this.totalPages === 0 || this.page === this.totalPages);
+        }
+    },
 });
 
 function getConfig() {
-    axios.get(apiUrl + 'config')
+    axios.get('config')
         .then(function (response) {
             let code = response.data.code;
             if (code !== 0) {
@@ -146,28 +149,8 @@ function getConfig() {
         });
 }
 
-function getMenus() {
-    axios.get(apiUrl + 'menus')
-        .then(function (response) {
-            let code = response.data.code;
-            if (code !== 0) {
-                alert(response.data.msg);
-                return;
-            }
-
-            if (!response.data.data) {
-                return;
-            }
-
-            index.menus = response.data.data;
-        })
-        .catch(function (error) {
-            console.log(error.data);
-        });
-}
-
 function getArticles(page, size, keyword) {
-    let url = apiUrl + `admin/article/page?page=${page}&size=${size}&keyword=${keyword}`;
+    let url = `admin/article/page?page=${page}&size=${size}&keyword=${keyword}`;
     axios.get(url)
         .then(function (response) {
             let result = response.data;
@@ -193,6 +176,7 @@ function getArticles(page, size, keyword) {
         });
 }
 
-getMenus();
-getConfig();
-getArticles(1, 20, '');
+loginHandle(() => {
+    getConfig();
+    getArticles(1, 20, '');
+});

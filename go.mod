@@ -13,6 +13,7 @@ require (
 	github.com/onsi/gomega v1.10.3 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/yudai/pp v2.0.1+incompatible // indirect
+	github.com/minio/minio-go/v7 v7.0.5
 	go.mongodb.org/mongo-driver v1.4.2
 	gopkg.in/yaml.v2 v2.3.0
 )

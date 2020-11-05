@@ -37,3 +37,5 @@ func Iris() iris.Configurator {
 func Port() string {
 	return strconv.Itoa(Config.Iris.Port)
 }
+
+const Bucket = "site"

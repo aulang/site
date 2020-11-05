@@ -127,7 +127,7 @@ func (s *commentService) GetByID(id string) (Comment, error) {
 
 	query := bson.D{{Key: "_id", Value: _id}}
 
-	err = s.c.FindOne(s.ctx, query).Decode(&article)
+	err = s.c.FindOne(s.ctx, query).Decode(&comment)
 
 	if err == mongo.ErrNoDocuments {
 		return comment, ErrNotFound
@@ -157,19 +157,19 @@ func (s *commentService) Reply(commentId string, reply *Reply) (Comment, error) 
 
 var _ CommentService = (*commentService)(nil)
 
-var comment = repository.Collection("comment")
+var commentCollection = repository.Collection("comment")
 
 func NewCommentService() CommentService {
-	return &commentService{c: comment, ctx: ctx}
+	return &commentService{c: commentCollection, ctx: ctx}
 }
 
 func init() {
 	indexes := [...]mongo.IndexModel{
 		{
 			Keys:    bson.M{"articleId": -1},
-			Options: options.Index().SetName("ik_comment_articleId").SetBackground(true),
+			Options: options.Index().SetName("ik_comment_articleId"),
 		},
 	}
 
-	comment.Indexes().CreateMany(ctx, indexes[:])
+	commentCollection.Indexes().CreateMany(ctx, indexes[:])
 }

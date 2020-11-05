@@ -108,19 +108,19 @@ func (s *categoryService) Save(category *Category) error {
 
 var _ CategoryService = (*categoryService)(nil)
 
-var category = repository.Collection("category")
+var categoryCollection = repository.Collection("category")
 
 func NewCategoryService() CategoryService {
-	return &categoryService{c: category, ctx: ctx}
+	return &categoryService{c: categoryCollection, ctx: ctx}
 }
 
 func init() {
 	indexes := [...]mongo.IndexModel{
 		{
 			Keys:    bson.M{"name": 1},
-			Options: options.Index().SetName("ik_category_name").SetUnique(true).SetBackground(true),
+			Options: options.Index().SetName("ik_category_name").SetUnique(true),
 		},
 	}
 
-	category.Indexes().CreateMany(ctx, indexes[:])
+	categoryCollection.Indexes().CreateMany(ctx, indexes[:])
 }

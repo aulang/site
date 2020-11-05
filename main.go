@@ -10,12 +10,18 @@ import (
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/recover"
 	"github.com/kataras/iris/v12/mvc"
+	"github.com/kataras/iris/v12/sessions"
 )
 
 func main() {
 	app := iris.New()
 
 	app.Use(recover.New())
+
+	// session
+	sess := sessions.New(sessions.Config{Cookie: "SessionID", AllowReclaim: true, Expires: -1})
+	app.Use(sess.Handler())
+
 	app.Logger().SetLevel("warn")
 
 	initMVC(mvc.New(app))
@@ -31,20 +37,21 @@ func initMVC(mvcApp *mvc.Application) {
 	mvcApp.Register(service.NewCategoryService())
 	mvcApp.Register(service.NewArticleService())
 	mvcApp.Register(service.NewCommentService())
-	mvcApp.Register(service.NewMenuService())
+	mvcApp.Register(service.NewResourceService())
+	mvcApp.Register(service.NewStorageService())
 
 	// ROOT
 	mvcApp.Handle(new(controller.IndexController))
 	// 配置
 	mvcApp.Party("/config").Handle(new(controller.WebConfigController))
-	// 菜单
-	mvcApp.Party("/menus").Handle(new(controller.MenuController))
 	// 类别
 	mvcApp.Party("/categories").Handle(new(controller.CategoryController))
 	// 文章
 	mvcApp.Party("/articles").Handle(new(controller.ArticleController))
 	// 评论
 	mvcApp.Party("/comment").Handle(new(controller.CommentController))
+	// 资源
+	mvcApp.Party("/resource").Handle(new(controller.ResourceController))
 
 	auth := oauth.New()
 	// Admin
@@ -52,6 +59,7 @@ func initMVC(mvcApp *mvc.Application) {
 
 	adminMvc.Party("/config").Handle(new(admin.ConfigController))
 	adminMvc.Party("/article").Handle(new(admin.ArticleController))
+	adminMvc.Party("/resource").Handle(new(admin.ResourceController))
 }
 
 func errorHandler(ctx iris.Context, err error) {

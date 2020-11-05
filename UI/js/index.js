@@ -1,5 +1,4 @@
-import { apiUrl } from './public/base.js';
-import { storage } from './public/storage.js';
+import {apiUrl} from './public/base.js';
 
 let article = new Vue({
     el: '#article',
@@ -119,7 +118,6 @@ let article = new Vue({
         }
     }
 });
-
 
 
 function initArticle() {

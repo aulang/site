@@ -1,8 +1,10 @@
 package oauth
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/sessions"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -29,25 +31,30 @@ func (o *OAuth) Serve(ctx iris.Context) {
 	accessToken := o.getAccessToken(ctx)
 	if accessToken == "" {
 		ctx.StopWithStatus(http.StatusUnauthorized)
+		return
 	}
 
-	user := ctx.User()
+	user := o.getSessionUser(ctx)
 	if user != nil && user.GetAuthorization() == accessToken {
+		ctx.SetUser(user)
+		ctx.Next()
 		return
 	}
 
 	user, err := o.obtainUser(accessToken)
 	if err != nil {
+		log.Println("获取User失败：", err)
 		ctx.StopWithStatus(http.StatusUnauthorized)
+		return
 	}
 
+	o.setSessionUser(ctx, *user)
 	ctx.SetUser(user)
 	ctx.Next()
 }
 
 func (o *OAuth) getAccessToken(ctx iris.Context) string {
 	accessToken := ctx.URLParam(ACCESS_TOKEN)
-
 	authorization := ctx.GetHeader(Authorization)
 
 	if authorization != "" {
@@ -58,7 +65,11 @@ func (o *OAuth) getAccessToken(ctx iris.Context) string {
 }
 
 func (o *OAuth) obtainUser(accessToken string) (user *SimpleUser, err error) {
-	client := http.Client{}
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	client := http.Client{Transport: transport}
 
 	req, err := http.NewRequest("GET", o.profileUrl, nil)
 	if err != nil {
@@ -80,12 +91,34 @@ func (o *OAuth) obtainUser(accessToken string) (user *SimpleUser, err error) {
 	}
 
 	err = json.Unmarshal(body, &user)
-	if err != nil {
-		log.Println("获取User失败", string(body))
+	if err != nil || user.ID == "" {
+		log.Println("Profile接口调用失败！", string(body))
 		return user, err
 	}
 
 	user.AccessToken = accessToken
 
 	return user, err
+}
+
+func (o *OAuth) setSessionUser(ctx iris.Context, user SimpleUser) {
+	session := sessions.Get(ctx)
+	if session != nil {
+		session.Set("SESSION_USER", user)
+	}
+}
+
+func (o *OAuth) getSessionUser(ctx iris.Context) *SimpleUser {
+	session := sessions.Get(ctx)
+
+	if session != nil {
+		data := session.Get("SESSION_USER")
+		if data != nil {
+			if user, ok := data.(SimpleUser); ok {
+				return &user
+			}
+		}
+	}
+
+	return nil
 }
