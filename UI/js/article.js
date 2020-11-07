@@ -1,5 +1,5 @@
 import {apiUrl} from './public/base.js';
-import {urlParam} from "./public/url.js";
+import {urlParam} from './public/url.js';
 
 let articleId = urlParam('id');
 
@@ -12,28 +12,39 @@ let article = new Vue({
     data: {
         article: {},
         comment: {
-            "name": "",
-            "mail": "",
-            "content": "",
-            "articleId": articleId
+            'name': '',
+            'mail': '',
+            'content': '',
+            'articleId': articleId
         }
     },
     methods: {
-        submit: function () {
-            var formData = JSON.stringify(this.comment);
-            axios.post(apiUrl + 'comment', formData).then(res => {
-                let code = res.data.code;
-                if (code !== 0) {
-                    alert(res.data.msg);
-                    return;
-                }
+        onSubmit: function (e) {
+            let formData = JSON.stringify(this.comment);
 
-                article.article.comments.push(res.data.data);
+            e.currentTarget.disabled = true;
+            axios.post(apiUrl + 'comment', formData)
+                .then(res => {
+                    let code = res.data.code;
+                    if (code !== 0) {
+                        alert(res.data.msg);
+                        return;
+                    }
 
-                article.article.commentsCount += 1;
-            }).catch(err => {
-                console.log(err);
-            });
+                    article.name = '';
+                    article.mail = '';
+                    article.content = '';
+
+                    article.article.comments.push(res.data.data);
+
+                    article.article.commentsCount += 1;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+                .then(() => {
+                    e.currentTarget.disabled = false;
+                });
         }
     }
 });

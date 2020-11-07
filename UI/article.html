@@ -52,7 +52,7 @@
                 <div class="row mb-3" v-html="article.content"></div>
 
                 <div class="row">
-                    <form class="w-100" @submit.prevent="submit">
+                    <form class="w-100" @submit.prevent="onSubmit">
                         <div class="form-group">
                             <textarea name="content" class="form-control" rows="3" required="required" v-model="comment.content"></textarea>
                         </div>
