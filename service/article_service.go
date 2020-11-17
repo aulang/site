@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-
 	. "github.com/aulang/site/entity"
 	"github.com/aulang/site/model"
 	"github.com/aulang/site/repository"
@@ -10,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
 )
 
 type ArticleService interface {
@@ -82,6 +82,19 @@ func (s *articleService) Save(article *Article) error {
 
 		if err != nil {
 			return err
+		}
+
+		_id, err := primitive.ObjectIDFromHex(article.CategoryID)
+		if err == nil {
+			query := bson.D{{Key: "_id", Value: _id}}
+
+			update := bson.D{
+				{Key: "$inc", Value: bson.M{"count": 1}},
+			}
+			_, err = categoryCollection.UpdateOne(s.ctx, query, update)
+			if err != nil {
+				log.Println("更新文章类别数失败：", err)
+			}
 		}
 	} else {
 		_id := article.ID
