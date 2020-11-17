@@ -129,7 +129,20 @@ function getConfig() {
                 return;
             }
 
-            config = storage.save('config', response.data.data);
+            config = response.data.data;
+            let menus = config.menus;
+            if (menus) {
+                config.menus = menus.map(e => {
+                    if (e.url.startsWith('http')) {
+                        e.target = '_blank';
+                    } else {
+                        e.target = '_self';
+                    }
+                    return e;
+                });
+            }
+
+            config = storage.save('config', config);
             setConfig(config);
         })
         .catch(function (error) {

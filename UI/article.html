@@ -49,7 +49,10 @@
                 <p>
                     <small>评论数：<span v-text="article.commentsCount"></span>&emsp;|&emsp;更新时间：<span v-text="article.renew"></span>&emsp;|&emsp;文章分类：<span v-text="article.categoryName"></span></small>
                 </p>
-                <div class="row mb-3" v-html="article.content"></div>
+
+                <div class="mb-3" v-html="article.content">
+
+                </div>
 
                 <div class="row">
                     <form class="w-100" @submit.prevent="onSubmit">

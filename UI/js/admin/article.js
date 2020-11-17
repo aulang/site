@@ -155,8 +155,7 @@ function getResource(id) {
                 return;
             }
 
-            let token = ttlLocalStorage.getItem('access_token');
-            article.resources = response.data.data.map(e => toResource(e, token));
+            article.resources = response.data.data.map(e => toResource(e));
         }).catch(error => {
         alert(error.data || '获取资源失败!');
     });
@@ -168,12 +167,11 @@ function getCategoryName() {
     return category.options[index].text;
 }
 
-function toResource(result, token) {
+function toResource(result) {
     let id = result.id
     let filename = result.filename;
-    token = token || ttlLocalStorage.getItem('access_token');
 
-    let url = `${baseUrl}resource/${id}?access_token=${token}`;
+    let url = `${baseUrl}resource/${id}`;
     return {
         id: id,
         filename: filename,

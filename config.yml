@@ -13,6 +13,6 @@ mongodb:
 
 minio:
   endpoint: 127.0.0.1:9000
-  accessKey: lsT6BZoh2gWPKUmH
-  secretKey: A7Ak1TGQSytK5WmGSRF3VWQFYHYEVVZG
+  accessKey: xxxxxxxxxxxxx
+  secretKey: xxxxxxxxxxxxxxxxxxxxxxxxxx
   useSSL: false
