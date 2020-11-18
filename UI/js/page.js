@@ -59,7 +59,7 @@ function getArticles(page, size) {
 
             articles.page = page.pageNo;
             articles.size = page.pageSize;
-            articles.articles = page.datas;
+            articles.articles = page.content;
             articles.totalPages = page.totalPages;
         })
         .catch(function (error) {
