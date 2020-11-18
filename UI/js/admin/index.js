@@ -150,7 +150,7 @@ function getConfig() {
 }
 
 function getArticles(page, size, keyword) {
-    let url = `admin/article/page?page=${page}&size=${size}&keyword=${keyword}`;
+    let url = `admin/article/page?page=${page}&pageSize=${size}&keyword=${keyword}`;
     axios.get(url)
         .then(function (response) {
             let result = response.data;

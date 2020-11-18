@@ -67,7 +67,7 @@ func (c *ArticleController) DeleteBy(id string) Response {
 // GET /admin/article/page
 func (c *ArticleController) GetPage() Response {
 	pageNo := c.Ctx.URLParamIntDefault("page", 1)
-	pageSize := c.Ctx.URLParamIntDefault("size", 1)
+	pageSize := c.Ctx.URLParamIntDefault("pageSize", 1)
 
 	if pageNo < 1 {
 		pageNo = 1

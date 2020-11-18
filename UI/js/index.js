@@ -21,7 +21,7 @@ let article = new Vue({
 
             let page = that.currPage + 2;
 
-            axios.get(apiUrl + 'articles/page?size=1&page=' + page)
+            axios.get(apiUrl + 'articles/page?pageSize=1&page=' + page)
                 .then(function (response) {
                     let code = response.data.code;
                     if (code !== 0) {
@@ -61,7 +61,7 @@ let article = new Vue({
                 return;
             }
 
-            axios.get(apiUrl + 'articles/page?size=1&page=' + page)
+            axios.get(apiUrl + 'articles/page?pageSize=1&page=' + page)
                 .then(function (response) {
                     let code = response.data.code;
                     if (code !== 0) {
@@ -121,7 +121,7 @@ let article = new Vue({
 
 
 function initArticle() {
-    axios.get(apiUrl + 'articles/page?page=1&size=2')
+    axios.get(apiUrl + 'articles/page?pageSize=2&page=1')
         .then(function (response) {
             let code = response.data.code;
             if (code !== 0) {

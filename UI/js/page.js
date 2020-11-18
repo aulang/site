@@ -39,7 +39,7 @@ function getArticles(page, size) {
     page = page || 0;
     size = size || 20;
 
-    let url = 'articles/page?page=' + page + '&size=' + size;
+    let url = 'articles/page?page=' + page + '&pageSize=' + size;
     if (keyword) {
         url = url + '&keyword=' + keyword;
     }
