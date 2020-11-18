@@ -32,15 +32,15 @@ let article = new Vue({
                     that.nextArticle = that.currArticle;
                     that.currArticle = that.preArticle;
 
-                    if (!response.data.data) {
+                    if (!response.data.data.content) {
                         that.preArticle = null;
                         return;
                     }
 
-                    that.currPage = that.currPage + 1;
+                    that.currPage = page;
 
-                    let data = response.data.data;
-                    that.preArticle = data[0];
+                    let articles = response.data.data.content;
+                    that.preArticle = articles[0];
                 })
                 .catch(function (error) {
                     console.log(error.data);
@@ -72,15 +72,15 @@ let article = new Vue({
                     that.preArticle = that.currArticle;
                     that.currArticle = that.nextArticle;
 
-                    if (!response.data.data) {
+                    if (!response.data.data.content) {
                         that.nextArticle = null;
                         return;
                     }
 
-                    that.currPage = that.currPage - 1;
+                    that.currPage = page;
 
-                    let data = response.data.data;
-                    that.nextArticle = data[0];
+                    let articles = response.data.data.content;
+                    that.nextArticle = articles[0];
                 })
                 .catch(function (error) {
                     console.log(error.data);
@@ -129,16 +129,16 @@ function initArticle() {
                 return;
             }
 
-            if (!response.data.data.datas) {
+            if (!response.data.data.content) {
                 return;
             }
 
-            let datas = response.data.data.datas;
+            let articles = response.data.data.content;
 
-            article.currArticle = datas[0];
+            article.currArticle = articles[0];
 
-            if (datas.length > 1) {
-                article.preArticle = datas[1];
+            if (articles.length > 1) {
+                article.preArticle = articles[1];
             }
         })
         .catch(function (error) {

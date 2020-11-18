@@ -1,10 +1,8 @@
 package controller
 
 import (
-	"errors"
 	"log"
 
-	"github.com/aulang/site/entity"
 	. "github.com/aulang/site/model"
 	"github.com/aulang/site/service"
 	"github.com/kataras/iris/v12"
@@ -50,7 +48,7 @@ func (c *ArticleController) GetTop3() Response {
 // GET /articles/page
 func (c *ArticleController) GetPage() Response {
 	pageNo := c.Ctx.URLParamIntDefault("page", 1)
-	pageSize := c.Ctx.URLParamIntDefault("size", 1)
+	pageSize := c.Ctx.URLParamIntDefault("pageSize", 1)
 
 	if pageNo < 1 {
 		pageNo = 1
@@ -67,28 +65,6 @@ func (c *ArticleController) GetPage() Response {
 	if err != nil {
 		return FailWithError(err)
 	}
-
-	var results []interface{}
-
-	for _, data := range page.Datas {
-		article, ok := data.(entity.Article)
-
-		if !ok {
-			return FailWithError(errors.New("类型转换错误"))
-		}
-
-		articleId := article.ID.Hex()
-
-		comments, err := c.CommentService.FindByArticleId(articleId)
-
-		if err != nil {
-			log.Printf("查询文章评论失败，%v", err)
-		}
-
-		results = append(results, ArticleComment{Article: article, Comments: comments})
-	}
-
-	page.Datas = results
 
 	return SuccessWithData(page)
 }

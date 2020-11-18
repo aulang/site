@@ -160,14 +160,14 @@ function getArticles(page, size, keyword) {
                 return;
             }
 
-            if (result.data.datas) {
-                index.articles = result.data.datas;
+            if (result.data.content) {
+                index.articles = result.data.content;
             } else {
                 index.articles = [];
             }
 
-            index.articles = result.data.datas;
             index.page = result.data.pageNo;
+            index.articles = result.data.content;
             index.pageSize = result.data.pageSize;
             index.totalPages = result.data.totalPages;
         })

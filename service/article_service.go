@@ -204,7 +204,7 @@ func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) 
 
 	defer cur.Close(s.ctx)
 
-	var datas []interface{}
+	var articles []interface{}
 
 	for cur.Next(s.ctx) {
 		if err = cur.Err(); err != nil {
@@ -218,12 +218,12 @@ func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) 
 			return page, err
 		}
 
-		datas = append(datas, elem)
+		articles = append(articles, elem)
 	}
 
-	page.Datas = datas
 	page.PageNo = pageNo
 	page.PageSize = pageNo
+	page.Content = articles
 	page.TotalPages = (count + pageSize - 1) / pageSize
 
 	return page, nil
