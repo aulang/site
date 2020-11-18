@@ -17,7 +17,7 @@ type OAuth struct {
 
 const (
 	Bearer        = "Bearer "
-	ACCESS_TOKEN  = "access_token"
+	AccessToken   = "access_token"
 	Authorization = "Authorization"
 )
 
@@ -54,7 +54,7 @@ func (o *OAuth) Serve(ctx iris.Context) {
 }
 
 func (o *OAuth) getAccessToken(ctx iris.Context) string {
-	accessToken := ctx.URLParam(ACCESS_TOKEN)
+	accessToken := ctx.URLParam(AccessToken)
 	authorization := ctx.GetHeader(Authorization)
 
 	if authorization != "" {
@@ -83,7 +83,7 @@ func (o *OAuth) obtainUser(accessToken string) (user *SimpleUser, err error) {
 		return user, err
 	}
 
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

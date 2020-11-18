@@ -51,7 +51,7 @@ func (s *categoryService) GetAll() ([]Category, error) {
 		return nil, err
 	}
 
-	defer cur.Close(s.ctx)
+	defer closeCursor(cur, s.ctx)
 
 	var results []Category
 
@@ -122,5 +122,5 @@ func init() {
 		},
 	}
 
-	categoryCollection.Indexes().CreateMany(ctx, indexes[:])
+	_, _ = categoryCollection.Indexes().CreateMany(ctx, indexes[:])
 }

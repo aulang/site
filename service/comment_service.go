@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 
 	. "github.com/aulang/site/entity"
 	"github.com/aulang/site/repository"
@@ -33,7 +34,7 @@ func (s *commentService) GetTop3() ([]Comment, error) {
 		return nil, err
 	}
 
-	defer cur.Close(s.ctx)
+	defer closeCursor(cur, s.ctx)
 
 	var results []Comment
 
@@ -64,7 +65,7 @@ func (s *commentService) FindByArticleId(articleId string) ([]Comment, error) {
 		return nil, err
 	}
 
-	defer cur.Close(s.ctx)
+	defer closeCursor(cur, s.ctx)
 
 	var results []Comment
 
@@ -93,6 +94,19 @@ func (s *commentService) Save(comment *Comment) error {
 
 		if err != nil {
 			return err
+		}
+
+		_id, err := primitive.ObjectIDFromHex(comment.ArticleID)
+		if err == nil {
+			query := bson.D{{Key: "_id", Value: _id}}
+
+			update := bson.D{
+				{Key: "$inc", Value: bson.M{"commentsCount": 1}},
+			}
+			_, err = articleCollection.UpdateOne(s.ctx, query, update)
+			if err != nil {
+				log.Println("更新文章评论数失败：", err)
+			}
 		}
 	} else {
 		_id := comment.ID
@@ -171,5 +185,5 @@ func init() {
 		},
 	}
 
-	commentCollection.Indexes().CreateMany(ctx, indexes[:])
+	_, _ = commentCollection.Indexes().CreateMany(ctx, indexes[:])
 }

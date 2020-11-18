@@ -12,7 +12,6 @@ import (
 
 type CommentController struct {
 	Ctx            iris.Context
-	ArticleService service.ArticleService
 	CommentService service.CommentService
 }
 
@@ -41,12 +40,6 @@ func (c *CommentController) Post() Response {
 
 	if err != nil {
 		return FailWithError(err)
-	}
-
-	article, err := c.ArticleService.GetByID(comment.ArticleID)
-	if err == nil {
-		article.CommentsCount++
-		c.ArticleService.Save(&article)
 	}
 
 	return SuccessWithData(comment)

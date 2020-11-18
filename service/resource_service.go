@@ -51,7 +51,7 @@ func (s *resourceService) GetBySubjectID(subjectId string) ([]Resource, error) {
 		return nil, err
 	}
 
-	defer cur.Close(s.ctx)
+	defer closeCursor(cur, s.ctx)
 
 	var results []Resource
 
@@ -142,5 +142,5 @@ func init() {
 		},
 	}
 
-	resourceCollection.Indexes().CreateMany(ctx, indexes[:])
+	_, _ = resourceCollection.Indexes().CreateMany(ctx, indexes[:])
 }

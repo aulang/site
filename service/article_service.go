@@ -33,7 +33,7 @@ func (s *articleService) GetAll() ([]Article, error) {
 		return nil, err
 	}
 
-	defer cur.Close(s.ctx)
+	defer closeCursor(cur, s.ctx)
 
 	var results []Article
 
@@ -149,7 +149,7 @@ func (s *articleService) GetTop3() ([]Article, error) {
 		return nil, err
 	}
 
-	defer cur.Close(s.ctx)
+	defer closeCursor(cur, s.ctx)
 
 	var results []Article
 
@@ -202,7 +202,7 @@ func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) 
 		return page, err
 	}
 
-	defer cur.Close(s.ctx)
+	defer closeCursor(cur, s.ctx)
 
 	var articles []interface{}
 
@@ -253,5 +253,5 @@ func init() {
 		},
 	}
 
-	articleCollection.Indexes().CreateMany(ctx, indexes[:])
+	_, _ = articleCollection.Indexes().CreateMany(ctx, indexes[:])
 }
