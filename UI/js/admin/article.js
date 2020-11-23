@@ -1,5 +1,11 @@
 import {storage} from "../public/storage.js";
 
+marked.setOptions({
+    highlight: function (code) {
+        return hljs.highlightAuto(code).value;
+    }
+});
+
 let article = new Vue({
     el: '#article',
     data: {
