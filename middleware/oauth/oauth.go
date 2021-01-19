@@ -4,15 +4,20 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/sessions"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type OAuth struct {
 	profileUrl string
+}
+
+type Profile struct {
+	id       string `json:"id,omitempty"`
+	nickname string `json:"nickname,omitempty"`
 }
 
 const (
@@ -34,13 +39,6 @@ func (o *OAuth) Serve(ctx iris.Context) {
 		return
 	}
 
-	user := o.getSessionUser(ctx)
-	if user != nil && user.GetAuthorization() == accessToken {
-		ctx.SetUser(user)
-		ctx.Next()
-		return
-	}
-
 	user, err := o.obtainUser(accessToken)
 	if err != nil {
 		log.Println("获取User失败：", err)
@@ -48,7 +46,6 @@ func (o *OAuth) Serve(ctx iris.Context) {
 		return
 	}
 
-	o.setSessionUser(ctx, *user)
 	ctx.SetUser(user)
 	ctx.Next()
 }
@@ -64,7 +61,7 @@ func (o *OAuth) getAccessToken(ctx iris.Context) string {
 	return accessToken
 }
 
-func (o *OAuth) obtainUser(accessToken string) (user *SimpleUser, err error) {
+func (o *OAuth) obtainUser(accessToken string) (user *iris.SimpleUser, err error) {
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
@@ -90,35 +87,18 @@ func (o *OAuth) obtainUser(accessToken string) (user *SimpleUser, err error) {
 		return user, err
 	}
 
-	err = json.Unmarshal(body, &user)
+	profile := Profile{}
+	err = json.Unmarshal(body, profile)
 	if err != nil || user.ID == "" {
 		log.Println("Profile接口调用失败！", string(body))
 		return user, err
 	}
 
-	user.AccessToken = accessToken
+	user.Authorization = accessToken
+	user.AuthorizedAt = time.Now()
+
+	user.ID = profile.id
+	user.Username = profile.nickname
 
 	return user, err
-}
-
-func (o *OAuth) setSessionUser(ctx iris.Context, user SimpleUser) {
-	session := sessions.Get(ctx)
-	if session != nil {
-		session.Set("SESSION_USER", user)
-	}
-}
-
-func (o *OAuth) getSessionUser(ctx iris.Context) *SimpleUser {
-	session := sessions.Get(ctx)
-
-	if session != nil {
-		data := session.Get("SESSION_USER")
-		if data != nil {
-			if user, ok := data.(SimpleUser); ok {
-				return &user
-			}
-		}
-	}
-
-	return nil
 }

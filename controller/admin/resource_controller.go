@@ -1,16 +1,16 @@
 package admin
 
 import (
+	"mime"
+	"strings"
+	"time"
+
 	"github.com/aulang/site/config"
 	"github.com/aulang/site/entity"
-	"github.com/aulang/site/middleware/oauth"
 	. "github.com/aulang/site/model"
 	"github.com/aulang/site/service"
 	"github.com/kataras/iris/v12"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"mime"
-	"strings"
-	"time"
 )
 
 type ResourceController struct {
@@ -30,7 +30,7 @@ func (c *ResourceController) GetSubjectBy(subjectId string) Response {
 
 // POST /admin/resource/subject/{subjectId}
 func (c *ResourceController) PostSubjectBy(subjectId string) Response {
-	user := c.Ctx.User().(*oauth.SimpleUser)
+	user := c.Ctx.User().(*iris.SimpleUser)
 
 	file, header, err := c.Ctx.FormFile("file")
 
@@ -52,7 +52,7 @@ func (c *ResourceController) PostSubjectBy(subjectId string) Response {
 		ContentLength: contentLength,
 		SubjectID:     subjectId,
 		OwnerID:       user.ID,
-		OwnerName:     user.Nickname,
+		OwnerName:     user.Username,
 		CreationDate:  time.Now(),
 	}
 
