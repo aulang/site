@@ -10,17 +10,12 @@ import (
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/recover"
 	"github.com/kataras/iris/v12/mvc"
-	"github.com/kataras/iris/v12/sessions"
 )
 
 func main() {
 	app := iris.New()
 
 	app.Use(recover.New())
-
-	// session
-	sess := sessions.New(sessions.Config{Cookie: "SessionID", AllowReclaim: true, Expires: -1})
-	app.Use(sess.Handler())
 
 	app.Logger().SetLevel("warn")
 
@@ -53,6 +48,7 @@ func initMVC(mvcApp *mvc.Application) {
 	// 资源
 	mvcApp.Party("/resource").Handle(new(controller.ResourceController))
 
+	// 认证
 	auth := oauth.New()
 	// Admin
 	adminMvc := mvcApp.Party("/admin", auth)
