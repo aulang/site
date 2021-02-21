@@ -19,6 +19,13 @@ func main() {
 
 	app.Logger().SetLevel("warn")
 
+	app.Party("/user").ConfigureContainer(func(api *iris.APIContainer) {
+		api.Post("/", controller.NewUser)
+		api.Put("/{id:string}", controller.UpdateUser)
+		api.Get("/{id:string}", controller.GetUserById)
+		api.Delete("/{id:string}", controller.DeleteUserById)
+	})
+
 	initMVC(mvc.New(app))
 
 	_ = app.Listen(":"+config.Port(), config.Iris())
