@@ -12,22 +12,30 @@ import (
 var database *mongo.Database = nil
 
 func Database() *mongo.Database {
-	if database == nil {
-		clientOptions := options.Client().ApplyURI(config.Config.MongoDB.Uri)
-		client, err := mongo.Connect(context.Background(), clientOptions)
-
-		if err != nil {
-			log.Fatalf("连接MongoDB失败：%v", err)
-		}
-
-		err = client.Ping(context.Background(), nil)
-
-		if err != nil {
-			log.Fatalf("连接MongoDB失败：%v", err)
-		}
-
-		database = client.Database(config.Config.MongoDB.Database)
+	if database != nil {
+		return database
 	}
+
+	credential := options.Credential{
+		AuthMechanism: "PLAIN",
+		Username:      config.Config.MongoDB.Username,
+		Password:      config.Config.MongoDB.Password,
+	}
+
+	clientOptions := options.Client().ApplyURI(config.Config.MongoDB.Uri).SetAuth(credential)
+	client, err := mongo.Connect(context.Background(), clientOptions)
+
+	if err != nil {
+		log.Fatalf("连接MongoDB失败：%v", err)
+	}
+
+	err = client.Ping(context.Background(), nil)
+
+	if err != nil {
+		log.Fatalf("连接MongoDB失败：%v", err)
+	}
+
+	database = client.Database(config.Config.MongoDB.Database)
 
 	return database
 }

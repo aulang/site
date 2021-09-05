@@ -16,8 +16,8 @@ type OAuth struct {
 }
 
 type Profile struct {
-	id       string `json:"id,omitempty"`
-	nickname string `json:"nickname,omitempty"`
+	Id       string `json:"id,omitempty"`
+	Nickname string `json:"nickname,omitempty"`
 }
 
 const (
@@ -42,11 +42,15 @@ func (o *OAuth) Serve(ctx iris.Context) {
 	user, err := o.obtainUser(accessToken)
 	if err != nil {
 		log.Println("获取User失败：", err)
-		ctx.StopWithStatus(http.StatusUnauthorized)
+		ctx.StopWithError(http.StatusUnauthorized, err)
 		return
 	}
 
-	ctx.SetUser(user)
+	err = ctx.SetUser(user)
+	if err != nil {
+		ctx.StopWithError(http.StatusInternalServerError, err)
+		return
+	}
 	ctx.Next()
 }
 
@@ -55,7 +59,7 @@ func (o *OAuth) getAccessToken(ctx iris.Context) string {
 	authorization := ctx.GetHeader(Authorization)
 
 	if authorization != "" {
-		accessToken = strings.Replace(authorization, Bearer, "", 1)
+		accessToken = strings.TrimPrefix(authorization, Bearer)
 	}
 
 	return accessToken
@@ -88,7 +92,7 @@ func (o *OAuth) obtainUser(accessToken string) (user *iris.SimpleUser, err error
 	}
 
 	profile := Profile{}
-	err = json.Unmarshal(body, profile)
+	err = json.Unmarshal(body, &profile)
 	if err != nil || user.ID == "" {
 		log.Println("Profile接口调用失败！", string(body))
 		return user, err
@@ -97,8 +101,8 @@ func (o *OAuth) obtainUser(accessToken string) (user *iris.SimpleUser, err error
 	user.Authorization = accessToken
 	user.AuthorizedAt = time.Now()
 
-	user.ID = profile.id
-	user.Username = profile.nickname
+	user.ID = profile.Id
+	user.Username = profile.Nickname
 
 	return user, err
 }

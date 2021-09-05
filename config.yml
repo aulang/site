@@ -8,11 +8,13 @@ iris:
     - X-Forwarded-For
 
 mongodb:
-  uri: mongodb://127.0.0.1:27017
+  uri: mongodb://${STROAGE_IP:127.0.0.1}:27027
   database: site
+  username: ${MONGO_USERNAME:xxx}
+  password: ${MONGO_PASSWORD:xxxxxx}
 
 minio:
-  endpoint: 127.0.0.1:9000
-  accessKey: lsT6BZoh2gWPKUmH
-  secretKey: A7Ak1TGQSytK5WmGSRF3VWQFYHYEVVZG
+  endpoint: ${STROAGE_IP:127.0.0.1}:9000
+  accessKey: ${MINIO_ACCESS_KEY:xxx}
+  secretKey: ${MINIO_SECRET_KEY:xxxxxx}
   useSSL: false

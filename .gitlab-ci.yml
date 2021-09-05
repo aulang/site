@@ -31,18 +31,9 @@ delete_none_image:
   script:
     - docker rmi $(docker images | grep "none" | awk '{print $3}')
 
-deploy-frontend:
-  stage: deploy
-  only:
-    - master
-  script:
-    - rm -rf /usr/share/nginx/site/
-    - cp -rf ./UI/ /usr/share/nginx/site
-
 deploy-backend:
   stage: deploy
   only:
     - master
   script:
-    - rm -rf /var/log/site/*
     - docker run -d -v /var/log/site:/var/log/site --name=site --net=host --restart=always aulang/site

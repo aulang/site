@@ -47,8 +47,10 @@ func (c *ArticleController) GetTop3() Response {
 
 // GET /articles/page
 func (c *ArticleController) GetPage() Response {
-	pageNo := c.Ctx.URLParamIntDefault("page", 1)
-	pageSize := c.Ctx.URLParamIntDefault("pageSize", 1)
+	var defaultValue int64 = 1
+
+	pageNo := c.Ctx.URLParamInt64Default("page", defaultValue)
+	pageSize := c.Ctx.URLParamInt64Default("size", defaultValue)
 
 	if pageNo < 1 {
 		pageNo = 1
@@ -61,7 +63,7 @@ func (c *ArticleController) GetPage() Response {
 	keyword := c.Ctx.URLParam("keyword")
 	category := c.Ctx.URLParam("category")
 
-	page, err := c.ArticleService.Page(int64(pageNo), int64(pageSize), keyword, category)
+	page, err := c.ArticleService.GetByPage(pageNo, pageSize, keyword, category)
 	if err != nil {
 		return FailWithError(err)
 	}

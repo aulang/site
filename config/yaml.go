@@ -11,6 +11,8 @@ type Yaml struct {
 	MongoDB struct {
 		Uri      string `yaml:"uri"`
 		Database string `yaml:"database"`
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
 	}
 
 	Minio struct {

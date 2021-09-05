@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"log"
+
 	. "github.com/aulang/site/entity"
 	"github.com/aulang/site/model"
 	"github.com/aulang/site/repository"
@@ -9,7 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 )
 
 type ArticleService interface {
@@ -18,7 +19,7 @@ type ArticleService interface {
 	Save(a *Article) error
 	Delete(id string) error
 	GetTop3() ([]Article, error)
-	Page(pageNo, pageSize int64, keyword, category string) (model.Page, error)
+	GetByPage(pageNo, pageSize int64, keyword, category string) (*model.Page, error)
 }
 
 type articleService struct {
@@ -171,9 +172,7 @@ func (s *articleService) GetTop3() ([]Article, error) {
 	return results, nil
 }
 
-func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) (model.Page, error) {
-	var page model.Page
-
+func (s *articleService) GetByPage(pageNo, pageSize int64, keyword, category string) (*model.Page, error) {
 	skip := (pageNo - 1) * pageSize
 
 	ops := options.Find().SetSort(bson.D{{Key: "renew", Value: -1}}).SetSkip(skip).SetLimit(pageSize)
@@ -193,13 +192,13 @@ func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) 
 
 	count, err := s.c.CountDocuments(s.ctx, filter)
 	if err != nil {
-		return page, err
+		return nil, err
 	}
 
 	cur, err := s.c.Find(s.ctx, filter, ops)
 
 	if err != nil {
-		return page, err
+		return nil, err
 	}
 
 	defer closeCursor(cur, s.ctx)
@@ -208,25 +207,22 @@ func (s *articleService) Page(pageNo, pageSize int64, keyword, category string) 
 
 	for cur.Next(s.ctx) {
 		if err = cur.Err(); err != nil {
-			return page, err
+			return nil, err
 		}
 
 		var elem Article
 		err = cur.Decode(&elem)
 
 		if err != nil {
-			return page, err
+			return nil, err
 		}
 
 		articles = append(articles, elem)
 	}
 
-	page.PageNo = pageNo
-	page.PageSize = pageNo
-	page.Content = articles
-	page.TotalPages = (count + pageSize - 1) / pageSize
+	page := model.NewPage(pageNo, pageSize, count, articles)
 
-	return page, nil
+	return &page, nil
 }
 
 var _ ArticleService = (*articleService)(nil)

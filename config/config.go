@@ -5,8 +5,8 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/aulang/site/ymlex"
 	"github.com/kataras/iris/v12"
-	"gopkg.in/yaml.v2"
 )
 
 var Config = new(Yaml)
@@ -18,7 +18,7 @@ func init() {
 		log.Fatalf("加载配置文件失败，%v", err)
 	}
 
-	err = yaml.Unmarshal(configFile, Config)
+	err = ymlex.Unmarshal(configFile, Config)
 
 	if err != nil {
 		log.Fatalf("解析配置文件失败: %v", err)
