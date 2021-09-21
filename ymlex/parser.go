@@ -15,7 +15,7 @@ const LF = '\n'
 
 // REGULAR 暂时是支持一个，不支持嵌套
 // 格式如：${ENV_NAME: defaultValue}，defaultValue可选
-const REGULAR = "\\$\\{([^:^{^}]+):?([^:^{^}]*)}"
+const REGULAR = "\\$\\{([^:^{^}]+):?([^{^}]*)}"
 
 var regex *regexp.Regexp = nil
 
