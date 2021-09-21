@@ -20,13 +20,6 @@ func SuccessWithData(data interface{}) Response {
 	}
 }
 
-func Fail(code int, msg string) Response {
-	return Response{
-		Code: code,
-		Msg:  msg,
-	}
-}
-
 func FailWithCodeAndError(code int, err error) Response {
 	return Response{
 		Code: code,

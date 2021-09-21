@@ -14,7 +14,7 @@ mongodb:
   password: ${MONGO_PASSWORD:xxxxxx}
 
 minio:
-  endpoint: ${STROAGE_IP:127.0.0.1}:9000
+  endpoint: ${STROAGE_IP:127.0.0.1}:9010
   accessKey: ${MINIO_ACCESS_KEY:xxx}
   secretKey: ${MINIO_SECRET_KEY:xxxxxx}
   useSSL: false
