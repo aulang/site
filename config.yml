@@ -10,11 +10,11 @@ iris:
 mongodb:
   uri: mongodb://${STROAGE_IP:127.0.0.1}:27027
   database: site
-  username: ${MONGO_USERNAME:xxx}
-  password: ${MONGO_PASSWORD:xxxxxx}
+  username: ${MONGO_USERNAME}
+  password: ${MONGO_PASSWORD}
 
 minio:
   endpoint: ${STROAGE_IP:127.0.0.1}:9010
-  accessKey: ${MINIO_ACCESS_KEY:xxx}
-  secretKey: ${MINIO_SECRET_KEY:xxxxxx}
+  accessKey: ${MINIO_ACCESS_KEY}
+  secretKey: ${MINIO_SECRET_KEY}
   useSSL: false

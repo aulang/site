@@ -20,10 +20,11 @@ jobs:
           export GOARCH=amd64
           export CGO_ENABLED=0
           go build
-      - name: Build and push image
-        uses: docker/build-push-action@v1
+      - name: Build & push Docker image
+        uses: mr-smithers-excellent/docker-build-push@v5
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: aulang/site
+          registry: docker.io
+          image: aulang/site
           tags: latest

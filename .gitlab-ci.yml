@@ -19,6 +19,7 @@ stop_service:
   stage: stop
   only:
     - master
+  allow_failure: true
   script:
     - docker stop site
     - docker rm site
@@ -36,4 +37,12 @@ deploy-backend:
   only:
     - master
   script:
-    - docker run -d -p 8081:8081 -v /var/log/site:/var/log/site --name=site --restart=always aulang/site
+    - |
+      docker run -d -p 8081:8081 \
+      -v /var/log/site:/var/log/site \
+      -e STROAGE_IP=${STROAGE_IP} \
+      -e MONGO_USERNAME=${MONGO_USERNAME} \
+      -e MONGO_PASSWORD=${MONGO_PASSWORD} \
+      -e MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY} \
+      -e MINIO_SECRET_KEY=${MINIO_SECRET_KEY} \
+      --name=site --restart=always aulang/site
