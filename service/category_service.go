@@ -43,7 +43,7 @@ func (s *categoryService) getMaxOrder() int {
 }
 
 func (s *categoryService) GetAll() ([]Category, error) {
-	ops := options.Find().SetSort(bson.D{{Key: "order", Value: 1}})
+	ops := options.Find().SetSort(bson.D{{"order", 1}})
 
 	cur, err := s.c.Find(s.ctx, bson.D{}, ops)
 
@@ -81,29 +81,24 @@ func (s *categoryService) Save(category *Category) error {
 
 		_, err := s.c.InsertOne(s.ctx, category)
 
-		if err != nil {
-			return err
-		}
+		return err
 	} else {
 		_id := category.ID
 
-		query := bson.D{{Key: "_id", Value: _id}}
+		query := bson.D{{"_id", _id}}
 
 		update := bson.D{
-			{Key: "$set", Value: category},
+			{"$set", category},
 		}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update)
-		if err != nil {
-			if err == mongo.ErrNoDocuments {
-				return ErrNotFound
-			}
 
-			return err
+		if err == mongo.ErrNoDocuments {
+			return ErrNotFound
 		}
-	}
 
-	return nil
+		return err
+	}
 }
 
 var _ CategoryService = (*categoryService)(nil)

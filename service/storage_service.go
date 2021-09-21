@@ -10,7 +10,7 @@ import (
 )
 
 type StorageService interface {
-	Put(bucket, name string, contentType string, reader io.Reader, size int64) error
+	Put(bucket, name, contentType string, reader io.Reader, size int64) error
 	Get(bucket, name string) (*minio.Object, error)
 	Remove(bucket, name string) error
 }

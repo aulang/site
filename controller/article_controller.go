@@ -14,12 +14,13 @@ type ArticleController struct {
 	CommentService service.CommentService
 }
 
-// GET /articles/{id:string}
+// GetBy GET /article/{id:string}
 func (c *ArticleController) GetBy(id string) Response {
 	article, err := c.ArticleService.GetByID(id)
 
 	if err != nil {
-		return Fail(-1, "记录不存在")
+		log.Printf("查询文章信息失败，%v", err)
+		return FailWithError(err)
 	}
 
 	articleId := article.ID.Hex()
@@ -27,6 +28,7 @@ func (c *ArticleController) GetBy(id string) Response {
 
 	if err != nil {
 		log.Printf("查询文章评论失败，%v", err)
+		return FailWithError(err)
 	}
 
 	ac := ArticleComment{Article: article, Comments: comments}
@@ -34,39 +36,40 @@ func (c *ArticleController) GetBy(id string) Response {
 	return SuccessWithData(ac)
 }
 
-// GET /articles/top3
-func (c *ArticleController) GetTop3() Response {
-	articles, err := c.ArticleService.GetTop3()
+// GetTopBy GET /article/top/{num:int64}
+func (c *ArticleController) GetTopBy(num int64) Response {
+	articles, err := c.ArticleService.GetTop(num)
 
 	if err != nil {
 		log.Printf("查询最新文章失败，%v", err)
+		return FailWithError(err)
 	}
 
 	return SuccessWithData(articles)
 }
 
-// GET /articles/page
+// GetPage /article/page?page=1&size=20&keyword=keyword&category=category
 func (c *ArticleController) GetPage() Response {
-	var defaultValue int64 = 1
+	page := c.Ctx.URLParamInt64Default("page", 1)
+	size := c.Ctx.URLParamInt64Default("size", 20)
 
-	pageNo := c.Ctx.URLParamInt64Default("page", defaultValue)
-	pageSize := c.Ctx.URLParamInt64Default("size", defaultValue)
-
-	if pageNo < 1 {
-		pageNo = 1
+	if page < 1 {
+		page = 1
 	}
 
-	if pageSize < 1 {
-		pageSize = 1
+	if size < 1 {
+		size = 20
 	}
 
 	keyword := c.Ctx.URLParam("keyword")
 	category := c.Ctx.URLParam("category")
 
-	page, err := c.ArticleService.GetByPage(pageNo, pageSize, keyword, category)
+	result, err := c.ArticleService.GetByPage(page, size, keyword, category)
+
 	if err != nil {
+		log.Printf("分页查询文章失败，%v", err)
 		return FailWithError(err)
 	}
 
-	return SuccessWithData(page)
+	return SuccessWithData(result)
 }

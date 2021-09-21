@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// 回复
+// Reply 回复
 type Reply struct {
 	Mail         string    `json:"mail" bson:"mail"`                 // 回复人邮件
 	Name         string    `json:"name" bson:"name"`                 // 回复人
@@ -14,7 +14,7 @@ type Reply struct {
 	CreationDate time.Time `json:"creationDate" bson:"creationDate"` // 创建日期
 }
 
-// 评论
+// Comment 评论
 type Comment struct {
 	ID           primitive.ObjectID `json:"id" bson:"_id"`
 	Mail         string             `json:"mail" bson:"mail"`                           // 评论人邮件

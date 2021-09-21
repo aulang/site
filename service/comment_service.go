@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"log"
-
 	. "github.com/aulang/site/entity"
 	"github.com/aulang/site/repository"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,7 +12,7 @@ import (
 
 type CommentService interface {
 	Save(comment *Comment) error
-	GetTop3() ([]Comment, error)
+	GetTop(num int64) ([]Comment, error)
 	FindByArticleId(articleId string) ([]Comment, error)
 
 	Reply(commentId string, reply *Reply) (Comment, error)
@@ -25,8 +23,8 @@ type commentService struct {
 	ctx context.Context
 }
 
-func (s *commentService) GetTop3() ([]Comment, error) {
-	ops := options.Find().SetSort(bson.D{{Key: "creationDate", Value: -1}}).SetLimit(3)
+func (s *commentService) GetTop(num int64) ([]Comment, error) {
+	ops := options.Find().SetSort(bson.D{{"creationDate", -1}}).SetLimit(num)
 
 	cur, err := s.c.Find(s.ctx, bson.D{}, ops)
 
@@ -57,9 +55,9 @@ func (s *commentService) GetTop3() ([]Comment, error) {
 }
 
 func (s *commentService) FindByArticleId(articleId string) ([]Comment, error) {
-	ops := options.Find().SetSort(bson.D{{Key: "creationDate", Value: 1}})
+	ops := options.Find().SetSort(bson.D{{"creationDate", 1}})
 
-	cur, err := s.c.Find(s.ctx, bson.D{{Key: "articleId", Value: articleId}}, ops)
+	cur, err := s.c.Find(s.ctx, bson.D{{"articleId", articleId}}, ops)
 
 	if err != nil {
 		return nil, err
@@ -98,36 +96,33 @@ func (s *commentService) Save(comment *Comment) error {
 
 		_id, err := primitive.ObjectIDFromHex(comment.ArticleID)
 		if err == nil {
-			query := bson.D{{Key: "_id", Value: _id}}
+			query := bson.D{{"_id", _id}}
 
 			update := bson.D{
-				{Key: "$inc", Value: bson.M{"commentsCount": 1}},
+				{"$inc", bson.M{"commentsCount": 1}},
 			}
 			_, err = articleCollection.UpdateOne(s.ctx, query, update)
-			if err != nil {
-				log.Println("更新文章评论数失败：", err)
-			}
-		}
-	} else {
-		_id := comment.ID
-
-		query := bson.D{{Key: "_id", Value: _id}}
-
-		update := bson.D{
-			{Key: "$set", Value: comment},
-		}
-
-		_, err := s.c.UpdateOne(s.ctx, query, update)
-		if err != nil {
-			if err == mongo.ErrNoDocuments {
-				return ErrNotFound
-			}
 
 			return err
 		}
-	}
+		return err
+	} else {
+		_id := comment.ID
 
-	return nil
+		query := bson.D{{"_id", _id}}
+
+		update := bson.D{
+			{"$set", comment},
+		}
+
+		_, err := s.c.UpdateOne(s.ctx, query, update)
+
+		if err == mongo.ErrNoDocuments {
+			return ErrNotFound
+		}
+
+		return err
+	}
 }
 
 func (s *commentService) GetByID(id string) (Comment, error) {
@@ -139,7 +134,7 @@ func (s *commentService) GetByID(id string) (Comment, error) {
 		return comment, err
 	}
 
-	query := bson.D{{Key: "_id", Value: _id}}
+	query := bson.D{{"_id", _id}}
 
 	err = s.c.FindOne(s.ctx, query).Decode(&comment)
 

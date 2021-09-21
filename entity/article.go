@@ -6,13 +6,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// 文章
+// Article 文章
 type Article struct {
 	ID            primitive.ObjectID `json:"id" bson:"_id"`
 	Private       bool               `json:"private" bson:"private"`               // 是否私有
 	Title         string             `json:"title" bson:"title"`                   // 标题
 	SubTitle      string             `json:"subTitle" bson:"subTitle"`             // 副标题
-	Summary       string             `json:"summary" bson:"summary"`               // 总结
+	Summary       string             `json:"summary" bson:"summary"`               // 简述
 	Content       string             `json:"content" bson:"content"`               // html
 	Source        string             `json:"source" bson:"source"`                 // 原内容
 	Renew         time.Time          `json:"renew" bson:"renew"`                   // 更新时间

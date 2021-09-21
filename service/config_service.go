@@ -29,7 +29,7 @@ func (s *webConfigService) Get() (WebConfig, error) {
 		return webConfig, ErrNotFound
 	}
 
-	return webConfig, nil
+	return webConfig, err
 }
 
 func (s *webConfigService) Save(config *WebConfig) error {
@@ -38,29 +38,24 @@ func (s *webConfigService) Save(config *WebConfig) error {
 
 		_, err := s.c.InsertOne(s.ctx, config)
 
-		if err != nil {
-			return err
-		}
+		return err
 	} else {
 		_id := config.ID
 
-		query := bson.D{{Key: "_id", Value: _id}}
+		query := bson.D{{"_id", _id}}
 
 		update := bson.D{
-			{Key: "$set", Value: config},
+			{"$set", config},
 		}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update)
-		if err != nil {
-			if err == mongo.ErrNoDocuments {
-				return ErrNotFound
-			}
 
-			return err
+		if err == mongo.ErrNoDocuments {
+			return ErrNotFound
 		}
-	}
 
-	return nil
+		return err
+	}
 }
 
 var _ WebConfigService = (*webConfigService)(nil)

@@ -1,7 +1,5 @@
 package model
 
-import "log"
-
 type Response struct {
 	Code int         `json:"code"`
 	Data interface{} `json:"data"`
@@ -29,10 +27,16 @@ func Fail(code int, msg string) Response {
 	}
 }
 
-func FailWithError(err error) Response {
-	log.Printf("接口调用失败，%v", err)
+func FailWithCodeAndError(code int, err error) Response {
 	return Response{
-		Code: -1,
+		Code: code,
+		Msg:  err.Error(),
+	}
+}
+
+func FailWithError(err error) Response {
+	return Response{
+		Code: 500,
 		Msg:  err.Error(),
 	}
 }

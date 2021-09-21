@@ -13,7 +13,7 @@ type ResourceController struct {
 	ResourceService service.ResourceService
 }
 
-// GET /resource/{id}
+// GetBy GET /resource/{id}
 func (c *ResourceController) GetBy(id string) {
 	resource, err := c.ResourceService.GetByID(id)
 	if err != nil {

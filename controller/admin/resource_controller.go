@@ -1,6 +1,8 @@
 package admin
 
 import (
+	"io"
+	"log"
 	"mime"
 	"strings"
 	"time"
@@ -19,7 +21,7 @@ type ResourceController struct {
 	ResourceService service.ResourceService
 }
 
-// GET /admin/resource/subject/{subjectId}
+// GetSubjectBy GET /admin/resource/subject/{subjectId}
 func (c *ResourceController) GetSubjectBy(subjectId string) Response {
 	resources, err := c.ResourceService.GetBySubjectID(subjectId)
 	if err != nil {
@@ -28,7 +30,7 @@ func (c *ResourceController) GetSubjectBy(subjectId string) Response {
 	return SuccessWithData(resources)
 }
 
-// POST /admin/resource/subject/{subjectId}
+// PostSubjectBy POST /admin/resource/subject/{subjectId}
 func (c *ResourceController) PostSubjectBy(subjectId string) Response {
 	user := c.Ctx.User().(*iris.SimpleUser)
 
@@ -38,7 +40,7 @@ func (c *ResourceController) PostSubjectBy(subjectId string) Response {
 		return FailWithError(err)
 	}
 
-	defer file.Close()
+	defer closeWithoutError(file)
 
 	filename := header.Filename
 	contentLength := header.Size
@@ -58,10 +60,16 @@ func (c *ResourceController) PostSubjectBy(subjectId string) Response {
 
 	err = c.StorageService.Put(config.Bucket, resource.ID.Hex(), contentType, file, header.Size)
 	if err != nil {
+		log.Printf("上传文件失败，%v", err)
 		return FailWithError(err)
 	}
 
-	c.ResourceService.Save(&resource)
+	err = c.ResourceService.Save(&resource)
+	if err != nil {
+		log.Printf("保存文件信息失败，%v", err)
+		return FailWithError(err)
+	}
+
 	return SuccessWithData(resource)
 }
 
@@ -81,7 +89,7 @@ func ContentTypeByFilename(filename string) string {
 	return typ
 }
 
-// DELETE /admin/resource/{id}
+// DeleteBy DELETE /admin/resource/{id}
 func (c *ResourceController) DeleteBy(id string) Response {
 	if err := c.ResourceService.Delete(id); err != nil {
 		return FailWithError(err)
@@ -89,4 +97,8 @@ func (c *ResourceController) DeleteBy(id string) Response {
 		_ = c.StorageService.Remove(config.Bucket, id)
 		return Success()
 	}
+}
+
+func closeWithoutError(closer io.Closer) {
+	_ = closer.Close()
 }

@@ -15,41 +15,39 @@ import (
 func main() {
 	app := iris.New()
 
+	// 未捕获异常恢复
 	app.Use(recover.New())
-
+	// 日志级别
 	app.Logger().SetLevel("warn")
 
-	app.Party("/user").ConfigureContainer(func(api *iris.APIContainer) {
-		api.Post("/", controller.NewUser)
-		api.Put("/{id:string}", controller.UpdateUser)
-		api.Get("/{id:string}", controller.GetUserById)
-		api.Delete("/{id:string}", controller.DeleteUserById)
-	})
-
-	initMVC(mvc.New(app))
+	// 初始化MVC
+	initMvc(mvc.New(app))
 
 	_ = app.Listen(":"+config.Port(), config.Iris())
 }
 
-func initMVC(mvcApp *mvc.Application) {
+func initMvc(mvcApp *mvc.Application) {
+	// 异常处理
 	mvcApp.HandleError(errorHandler)
 
 	// Service注册
-	mvcApp.Register(service.NewWebConfigService())
-	mvcApp.Register(service.NewCategoryService())
-	mvcApp.Register(service.NewArticleService())
-	mvcApp.Register(service.NewCommentService())
-	mvcApp.Register(service.NewResourceService())
-	mvcApp.Register(service.NewStorageService())
+	mvcApp.Register(
+		service.NewWebConfigService(),
+		service.NewCategoryService(),
+		service.NewResourceService(),
+		service.NewArticleService(),
+		service.NewCommentService(),
+		service.NewStorageService(),
+	)
 
 	// ROOT
 	mvcApp.Handle(new(controller.IndexController))
 	// 配置
 	mvcApp.Party("/config").Handle(new(controller.WebConfigController))
 	// 类别
-	mvcApp.Party("/categories").Handle(new(controller.CategoryController))
+	mvcApp.Party("/category").Handle(new(controller.CategoryController))
 	// 文章
-	mvcApp.Party("/articles").Handle(new(controller.ArticleController))
+	mvcApp.Party("/article").Handle(new(controller.ArticleController))
 	// 评论
 	mvcApp.Party("/comment").Handle(new(controller.CommentController))
 	// 资源

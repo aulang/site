@@ -12,12 +12,12 @@ type ConfigController struct {
 	ConfigService service.WebConfigService
 }
 
-// POST /admin/config
+// Post /admin/config
 func (c *ConfigController) Post() Response {
 	var config entity.WebConfig
 
 	if err := c.Ctx.ReadJSON(&config); err != nil {
-		return FailWithError(err)
+		return FailWithCodeAndError(400, err)
 	}
 
 	err := c.ConfigService.Save(&config)

@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"log"
-
 	. "github.com/aulang/site/entity"
 	"github.com/aulang/site/model"
 	"github.com/aulang/site/repository"
@@ -14,46 +12,16 @@ import (
 )
 
 type ArticleService interface {
-	GetAll() ([]Article, error)
 	GetByID(id string) (Article, error)
-	Save(a *Article) error
+	Save(article *Article) error
 	Delete(id string) error
-	GetTop3() ([]Article, error)
-	GetByPage(pageNo, pageSize int64, keyword, category string) (*model.Page, error)
+	GetTop(num int64) ([]Article, error)
+	GetByPage(page, size int64, keyword, category string) (*model.Page, error)
 }
 
 type articleService struct {
 	c   *mongo.Collection
 	ctx context.Context
-}
-
-func (s *articleService) GetAll() ([]Article, error) {
-	cur, err := s.c.Find(s.ctx, bson.D{})
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer closeCursor(cur, s.ctx)
-
-	var results []Article
-
-	for cur.Next(s.ctx) {
-		if err = cur.Err(); err != nil {
-			return nil, err
-		}
-
-		var elem Article
-		err = cur.Decode(&elem)
-
-		if err != nil {
-			return nil, err
-		}
-
-		results = append(results, elem)
-	}
-
-	return results, nil
 }
 
 func (s *articleService) GetByID(id string) (Article, error) {
@@ -65,7 +33,7 @@ func (s *articleService) GetByID(id string) (Article, error) {
 		return article, err
 	}
 
-	query := bson.D{{Key: "_id", Value: _id}}
+	query := bson.D{{"_id", _id}}
 
 	err = s.c.FindOne(s.ctx, query).Decode(&article)
 
@@ -87,36 +55,33 @@ func (s *articleService) Save(article *Article) error {
 
 		_id, err := primitive.ObjectIDFromHex(article.CategoryID)
 		if err == nil {
-			query := bson.D{{Key: "_id", Value: _id}}
+			query := bson.D{{"_id", _id}}
 
 			update := bson.D{
 				{Key: "$inc", Value: bson.M{"count": 1}},
 			}
 			_, err = categoryCollection.UpdateOne(s.ctx, query, update)
-			if err != nil {
-				log.Println("更新文章类别数失败：", err)
-			}
-		}
-	} else {
-		_id := article.ID
-
-		query := bson.D{{Key: "_id", Value: _id}}
-
-		update := bson.D{
-			{Key: "$set", Value: article},
-		}
-
-		_, err := s.c.UpdateOne(s.ctx, query, update)
-		if err != nil {
-			if err == mongo.ErrNoDocuments {
-				return ErrNotFound
-			}
 
 			return err
 		}
-	}
+		return err
+	} else {
+		_id := article.ID
 
-	return nil
+		query := bson.D{{"_id", _id}}
+
+		update := bson.D{
+			{"$set", article},
+		}
+
+		_, err := s.c.UpdateOne(s.ctx, query, update)
+
+		if err == mongo.ErrNoDocuments {
+			return ErrNotFound
+		}
+
+		return err
+	}
 }
 
 func (s *articleService) Delete(id string) error {
@@ -126,23 +91,20 @@ func (s *articleService) Delete(id string) error {
 		return err
 	}
 
-	query := bson.D{{Key: "_id", Value: _id}}
+	query := bson.D{{"_id", _id}}
 
 	_, err = s.c.DeleteOne(s.ctx, query)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return ErrNotFound
-		}
 
-		return err
+	if err == mongo.ErrNoDocuments {
+		return ErrNotFound
 	}
 
-	return nil
+	return err
 }
 
-func (s *articleService) GetTop3() ([]Article, error) {
+func (s *articleService) GetTop(num int64) ([]Article, error) {
 	// 只要id和title字段
-	ops := options.Find().SetProjection(bson.M{"_id": 1, "title": 1}).SetSort(bson.D{{Key: "creationDate", Value: -1}}).SetLimit(3)
+	ops := options.Find().SetProjection(bson.M{"_id": 1, "title": 1}).SetSort(bson.D{{"creationDate", -1}}).SetLimit(num)
 
 	cur, err := s.c.Find(s.ctx, bson.D{}, ops)
 
@@ -175,7 +137,7 @@ func (s *articleService) GetTop3() ([]Article, error) {
 func (s *articleService) GetByPage(pageNo, pageSize int64, keyword, category string) (*model.Page, error) {
 	skip := (pageNo - 1) * pageSize
 
-	ops := options.Find().SetSort(bson.D{{Key: "renew", Value: -1}}).SetSkip(skip).SetLimit(pageSize)
+	ops := options.Find().SetSort(bson.D{{"renew", -1}}).SetSkip(skip).SetLimit(pageSize)
 
 	filter := bson.M{}
 
@@ -222,7 +184,7 @@ func (s *articleService) GetByPage(pageNo, pageSize int64, keyword, category str
 
 	page := model.NewPage(pageNo, pageSize, count, articles)
 
-	return &page, nil
+	return page, nil
 }
 
 var _ ArticleService = (*articleService)(nil)

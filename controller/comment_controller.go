@@ -15,23 +15,24 @@ type CommentController struct {
 	CommentService service.CommentService
 }
 
-// GET /comment/top3
-func (c *CommentController) GetTop3() Response {
-	comments, err := c.CommentService.GetTop3()
+// GetTopBy /comment/top/{num:int64}
+func (c *CommentController) GetTopBy(num int64) Response {
+	comments, err := c.CommentService.GetTop(num)
 
 	if err != nil {
-		log.Printf("查询最进评论失败，%v", err)
+		log.Printf("查询最新评论失败，%v", err)
+		return FailWithError(err)
 	}
 
 	return SuccessWithData(comments)
 }
 
-// POST /comment
+// Post /comment
 func (c *CommentController) Post() Response {
 	var comment entity.Comment
 
 	if err := c.Ctx.ReadJSON(&comment); err != nil {
-		return FailWithError(err)
+		return FailWithCodeAndError(400, err)
 	}
 
 	comment.CreationDate = time.Now()
@@ -39,18 +40,19 @@ func (c *CommentController) Post() Response {
 	err := c.CommentService.Save(&comment)
 
 	if err != nil {
+		log.Printf("保存评论失败，%v", err)
 		return FailWithError(err)
 	}
 
 	return SuccessWithData(comment)
 }
 
-// POST /comment/{commentId:string}/reply
+// PostByReply /comment/{commentId:string}/reply
 func (c *CommentController) PostByReply(commentId string) Response {
 	var reply entity.Reply
 
 	if err := c.Ctx.ReadJSON(&reply); err != nil {
-		return FailWithError(err)
+		return FailWithCodeAndError(400, err)
 	}
 
 	reply.CreationDate = time.Now()
@@ -58,6 +60,7 @@ func (c *CommentController) PostByReply(commentId string) Response {
 	comment, err := c.CommentService.Reply(commentId, &reply)
 
 	if err != nil {
+		log.Printf("保存回复失败，%v", err)
 		return FailWithError(err)
 	}
 

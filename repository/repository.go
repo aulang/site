@@ -17,7 +17,7 @@ func Database() *mongo.Database {
 	}
 
 	credential := options.Credential{
-		AuthMechanism: "PLAIN",
+		AuthMechanism: "SCRAM-SHA-256",
 		Username:      config.Config.MongoDB.Username,
 		Password:      config.Config.MongoDB.Password,
 	}

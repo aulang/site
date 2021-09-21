@@ -31,7 +31,7 @@ func (s *resourceService) GetByID(id string) (Resource, error) {
 		return resource, err
 	}
 
-	query := bson.D{{Key: "_id", Value: _id}}
+	query := bson.D{{"_id", _id}}
 
 	err = s.c.FindOne(s.ctx, query).Decode(&resource)
 
@@ -79,9 +79,7 @@ func (s *resourceService) Save(resource *Resource) error {
 
 		_, err := s.c.InsertOne(s.ctx, resource)
 
-		if err != nil {
-			return err
-		}
+		return err
 	} else {
 		_id := resource.ID
 
@@ -92,16 +90,13 @@ func (s *resourceService) Save(resource *Resource) error {
 		}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update, options.Update().SetUpsert(true))
-		if err != nil {
-			if err == mongo.ErrNoDocuments {
-				return ErrNotFound
-			}
 
-			return err
+		if err == mongo.ErrNoDocuments {
+			return ErrNotFound
 		}
-	}
 
-	return nil
+		return err
+	}
 }
 
 func (s *resourceService) Delete(id string) error {
@@ -114,15 +109,12 @@ func (s *resourceService) Delete(id string) error {
 	query := bson.D{{Key: "_id", Value: _id}}
 
 	_, err = s.c.DeleteOne(s.ctx, query)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return ErrNotFound
-		}
 
-		return err
+	if err == mongo.ErrNoDocuments {
+		return ErrNotFound
 	}
 
-	return nil
+	return err
 }
 
 var _ ResourceService = (*resourceService)(nil)

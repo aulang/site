@@ -8,11 +8,14 @@ type Page struct {
 	Records []interface{} `json:"records"` // 分页记录
 }
 
-func NewPage(current, size, total int64, Records []interface{}) Page {
-	// 总页数 = (总记录数 + 每页数据大小 - 1) / 每页数据大小
-	pages := (total + size - 1) / size
+func NewPage(current, size, total int64, Records []interface{}) *Page {
+	var pages int64 = 0
+	if size != 0 {
+		// 总页数 = (总记录数 + 每页数据大小 - 1) / 每页数据大小
+		pages = (total + size - 1) / size
+	}
 
-	return Page{
+	return &Page{
 		Size:    size,
 		Pages:   pages,
 		Total:   total,

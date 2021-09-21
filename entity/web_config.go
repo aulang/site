@@ -11,6 +11,12 @@ type Link struct {
 	Order int    `json:"order" bson:"order"`                   // 排序
 	Desc  string `json:"desc,omitempty" bson:"desc,omitempty"` // 描述
 }
+type BeiAn struct {
+	GxbNo  string `json:"gxbNo" bson:"gxbNo"`   // 工信部备案号
+	GxbUrl string `json:"gxbUrl" bson:"gxbUrl"` // 工信部备案链接
+	GabNo  string `json:"gabNo" bson:"gabNo"`   // 公安部备案号
+	GabUrl string `json:"gabUrl" bson:"gabUrl"` // 公安部备案链接
+}
 
 type LinkSlice []Link
 
@@ -33,6 +39,7 @@ type WebConfig struct {
 	Since        string             `json:"since" bson:"since"`                   // 开始年份
 	Menus        LinkSlice          `json:"menus" bson:"menus"`                   // 导航菜单
 	Links        LinkSlice          `json:"links" bson:"links"`                   // 友情链接
+	BeiAn        BeiAn              `json:"beiAn" bson:"beiAn"`                   // 备案信息
 }
 
 func (ws WebConfig) Sort() WebConfig {

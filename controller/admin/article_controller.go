@@ -15,7 +15,7 @@ type ArticleController struct {
 	CommentService service.CommentService
 }
 
-// POST /admin/article
+// Post /admin/article
 func (c *ArticleController) Post() Response {
 	var article entity.Article
 
@@ -54,7 +54,7 @@ func (c *ArticleController) Post() Response {
 	return SuccessWithData(article)
 }
 
-// DELETE /admin/article/{id}
+//DeleteBy DELETE /admin/article/{id}
 func (c *ArticleController) DeleteBy(id string) Response {
 	err := c.ArticleService.Delete(id)
 	if err != nil {
@@ -64,28 +64,26 @@ func (c *ArticleController) DeleteBy(id string) Response {
 	}
 }
 
-// GET /admin/article/page
+//GetPage GET /admin/article/page?page=1&size=20&keyword=keyword&category=category
 func (c *ArticleController) GetPage() Response {
-	var defaultValue int64 = 1
+	page := c.Ctx.URLParamInt64Default("page", 1)
+	size := c.Ctx.URLParamInt64Default("size", 20)
 
-	pageNo := c.Ctx.URLParamInt64Default("page", defaultValue)
-	pageSize := c.Ctx.URLParamInt64Default("pageSize", defaultValue)
-
-	if pageNo < 1 {
-		pageNo = 1
+	if page < 1 {
+		page = 1
 	}
 
-	if pageSize < 1 {
-		pageSize = 1
+	if size < 1 {
+		size = 20
 	}
 
 	keyword := c.Ctx.URLParam("keyword")
 	category := c.Ctx.URLParam("category")
 
-	page, err := c.ArticleService.GetByPage(pageNo, pageSize, keyword, category)
+	result, err := c.ArticleService.GetByPage(page, size, keyword, category)
 	if err != nil {
 		return FailWithError(err)
 	}
 
-	return SuccessWithData(page)
+	return SuccessWithData(result)
 }
