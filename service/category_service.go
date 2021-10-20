@@ -87,9 +87,7 @@ func (s *categoryService) Save(category *Category) error {
 
 		query := bson.D{{"_id", _id}}
 
-		update := bson.D{
-			{"$set", category},
-		}
+		update := bson.D{{"$set", category}}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update)
 

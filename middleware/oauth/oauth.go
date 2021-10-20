@@ -3,12 +3,13 @@ package oauth
 import (
 	"crypto/tls"
 	"encoding/json"
-	"github.com/kataras/iris/v12"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/kataras/iris/v12"
 )
 
 type OAuth struct {

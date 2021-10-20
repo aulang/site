@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	. "github.com/aulang/site/entity"
 	"github.com/aulang/site/repository"
 	"go.mongodb.org/mongo-driver/bson"
@@ -98,9 +99,7 @@ func (s *commentService) Save(comment *Comment) error {
 		if err == nil {
 			query := bson.D{{"_id", _id}}
 
-			update := bson.D{
-				{"$inc", bson.M{"commentsCount": 1}},
-			}
+			update := bson.D{{"$inc", bson.M{"commentsCount": 1}}}
 			_, err = articleCollection.UpdateOne(s.ctx, query, update)
 
 			return err
@@ -111,9 +110,7 @@ func (s *commentService) Save(comment *Comment) error {
 
 		query := bson.D{{"_id", _id}}
 
-		update := bson.D{
-			{"$set", comment},
-		}
+		update := bson.D{{"$set", comment}}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update)
 
@@ -154,7 +151,7 @@ func (s *commentService) Reply(commentId string, reply *Reply) (Comment, error) 
 	replies := comment.Replies
 
 	if replies == nil {
-		replies = make([]Reply, 1, 1)
+		replies = make([]Reply, 1)
 	}
 
 	replies = append(replies, *reply)

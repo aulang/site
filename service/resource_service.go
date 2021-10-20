@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	. "github.com/aulang/site/entity"
 	"github.com/aulang/site/repository"
 	"go.mongodb.org/mongo-driver/bson"
@@ -43,7 +44,7 @@ func (s *resourceService) GetByID(id string) (Resource, error) {
 }
 
 func (s *resourceService) GetBySubjectID(subjectId string) ([]Resource, error) {
-	query := bson.D{{Key: "subjectId", Value: subjectId}}
+	query := bson.D{{"subjectId", subjectId}}
 
 	cur, err := s.c.Find(s.ctx, query)
 
@@ -83,11 +84,9 @@ func (s *resourceService) Save(resource *Resource) error {
 	} else {
 		_id := resource.ID
 
-		query := bson.D{{Key: "_id", Value: _id}}
+		query := bson.D{{"_id", _id}}
 
-		update := bson.D{
-			{Key: "$set", Value: resource},
-		}
+		update := bson.D{{"$set", resource}}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update, options.Update().SetUpsert(true))
 
@@ -106,7 +105,7 @@ func (s *resourceService) Delete(id string) error {
 		return err
 	}
 
-	query := bson.D{{Key: "_id", Value: _id}}
+	query := bson.D{{"_id", _id}}
 
 	_, err = s.c.DeleteOne(s.ctx, query)
 

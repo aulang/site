@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	. "github.com/aulang/site/entity"
 	"github.com/aulang/site/model"
 	"github.com/aulang/site/repository"
@@ -70,9 +71,7 @@ func (s *articleService) Save(article *Article) error {
 
 		query := bson.D{{"_id", _id}}
 
-		update := bson.D{
-			{"$set", article},
-		}
+		update := bson.D{{"$set", article}}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update)
 

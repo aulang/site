@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	. "github.com/aulang/site/entity"
@@ -44,9 +45,7 @@ func (s *webConfigService) Save(config *WebConfig) error {
 
 		query := bson.D{{"_id", _id}}
 
-		update := bson.D{
-			{"$set", config},
-		}
+		update := bson.D{{"$set", config}}
 
 		_, err := s.c.UpdateOne(s.ctx, query, update)
 
